@@ -6,7 +6,7 @@ import {
   List,
   Container,
   Typography,
-  Box,
+  Box
 } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -24,16 +24,19 @@ const useStyles = makeStyles(theme => ({
 const NoteList = ({ notes }) => {
   // TODO: handle text overflow better
   const truncateContent = content => {
-    if (content.indexOf('\n') === -1) {
+    if (content.indexOf("\n") === -1) {
       return content;
     }
-    return content.substring(0, content.indexOf('\n'));
-  }
+    return content.substring(0, content.indexOf("\n"));
+  };
 
   const getItems = () =>
     notes.map((note, index) => (
       <ListItem button key={index} divider>
-        <ListItemText primary={note.title} secondary={truncateContent(note.content)} />
+        <ListItemText
+          primary={note.title}
+          secondary={truncateContent(note.content)}
+        />
       </ListItem>
     ));
 
@@ -47,38 +50,18 @@ const NoteList = ({ notes }) => {
   );
 };
 
-// TODO: move new note form to its own component
 const NoteListView = ({ name, notes }) => {
   const classes = useStyles();
-  // const [input, setInput] = useState("");
-
-  // const onSubmit = event => {
-  //   event.preventDefault();
-  //   const newNote = new Note(input, input);
-  //   addNote(newNote);
-  //   setInput("");
-  // };
 
   return (
     <Box minHeight="100vh">
-      {/* <Container maxWidth="sm">
-        <form onSubmit={onSubmit}>
-          <TextField
-            id="standard-dense"
-            label="Add note"
-            margin="normal"
-            value={input}
-            className={classes.textField}
-            onChange={event => setInput(event.target.value)}
-          />
-          <Button onClick={onSubmit}>Submit</Button>
-        </form>
-      </Container> */}
       <Container>
         <Typography className={classes.header} variant="h6">
           {name}
         </Typography>
-        <Typography variant="caption">{notes.length} notes</Typography>
+        <Typography variant="caption">
+          {notes.length} {notes.length === 1 ? "note" : "notes"}
+        </Typography>
       </Container>
       <NoteList notes={notes} />
     </Box>

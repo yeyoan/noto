@@ -7,11 +7,13 @@ const Bridge = ({ page, notes, notebooks, tags }) => {
   }
   if (Math.floor(page) === 2) {
     const index = Math.round((page - 2) * 10) - 1;
-    return <NoteListView name={notebooks[index].name} notes={notes} />
+    const notesToShow = notes.filter(note => note.notebook.name === notebooks[index].name);
+    return <NoteListView name={notebooks[index].name} notes={notesToShow} />
   }
   if (Math.floor(page) === 3) {
     const index = Math.round((page - 3) * 10) - 1;
-    return <NoteListView name={tags[index]} notes={notes} />
+    const notesToShow = notes.filter(note => note.tags.includes(tags[index]));
+    return <NoteListView name={tags[index]} notes={notesToShow} />
   }
   if (page === 4) {
     const notesToShow = notes.filter(note => note.deleted);

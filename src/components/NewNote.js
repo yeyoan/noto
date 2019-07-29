@@ -12,11 +12,11 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const NewNote = () => {
+const NewNote = ({ onClick }) => {
   const classes = useStyles();
 
   return (
-    <Button variant='text' size="large" color="primary" className={classes.button}>
+    <Button onClick={onClick} variant='text' size="large" color="primary" className={classes.button}>
       <NoteAddIcon className={classes.leftIcon} />
       New Note
     </Button>

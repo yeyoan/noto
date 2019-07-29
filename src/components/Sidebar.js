@@ -2,9 +2,9 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import User from "./User";
 import SearchBar from "./SearchBar";
-import NewNote from "./NewNote";
 import Navigation from "./Navigation";
 import { Drawer } from "@material-ui/core";
+import NewNoteDialog from "./NewNoteDialog";
 
 const useStyles = makeStyles(theme => ({
   drawer: {
@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Sidebar = ({ pageSetter, notebooks, tags }) => {
+const Sidebar = ({ addNote, pageSetter, notebooks, tags }) => {
   const classes = useStyles();
 
   return (
@@ -30,7 +30,7 @@ const Sidebar = ({ pageSetter, notebooks, tags }) => {
     >
       <User name="John Doe" />
       <SearchBar />
-      <NewNote />
+      <NewNoteDialog addNote={addNote} notebooks={notebooks} />
       <Navigation pageSetter={pageSetter} notebooks={notebooks} tags={tags} />
     </Drawer>
   );

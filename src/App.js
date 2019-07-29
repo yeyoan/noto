@@ -8,7 +8,7 @@ import { ThemeProvider } from "@material-ui/styles";
 
 const theme = createMuiTheme({
   palette: {
-    type: "dark"
+    type: "light"
   }
 });
 
@@ -43,6 +43,7 @@ function App({ dnotes, dnotebooks, dtags }) {
       <Grid container className={classes.root}>
         <Grid item>
           <Sidebar
+            addNote={addNote}
             pageSetter={pageSetter}
             notebooks={notebooks}
             tags={tags}
