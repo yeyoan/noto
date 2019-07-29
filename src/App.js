@@ -1,25 +1,61 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from "react";
+import { makeStyles } from "@material-ui/core/styles";
+import Sidebar from "./components/Sidebar";
+import NoteView from "./components/NoteView";
+import Bridge from "./components/Bridge";
+import { Grid, createMuiTheme, CssBaseline } from "@material-ui/core";
+import { ThemeProvider } from "@material-ui/styles";
 
-function App() {
+const theme = createMuiTheme({
+  palette: {
+    type: "dark"
+  }
+});
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    flexGrow: 1
+  }
+}));
+
+function App({ dnotes, dnotebooks, dtags }) {
+  const classes = useStyles();
+  const [page, setPage] = useState(1);
+  const [notes, setNotes] = useState(dnotes);
+  const [notebooks, setNotebooks] = useState(dnotebooks);
+  const [tags, setTags] = useState(dtags);
+
+  const pageSetter = pageNumber => {
+    setPage(pageNumber);
+  };
+
+  const addNote = note => {
+    setNotes(notes.concat(note));
+  };
+
+  const addNotebook = notebook => {
+    setNotebooks(notebooks.concat(notebook));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <Grid container className={classes.root}>
+        <Grid item>
+          <Sidebar
+            pageSetter={pageSetter}
+            notebooks={notebooks}
+            tags={tags}
+          />
+        </Grid>
+        <Grid item xs={4}>
+          <Bridge page={page} notes={notes} notebooks={notebooks} tags={tags} />
+        </Grid>
+        <Grid item xs={6}>
+          <NoteView note={notes[0]} />
+        </Grid>
+      </Grid>
+    </ThemeProvider>
   );
 }
 
