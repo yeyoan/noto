@@ -1,5 +1,7 @@
 import Notebook from "./Notebook";
 
+let id = 1;
+
 export default class Note {
   constructor(
     title,
@@ -8,6 +10,7 @@ export default class Note {
     deleted = false,
     tags = []
   ) {
+    this.id = id++;
     this.title = title;
     this.content = content;
     this.notebook = notebook;

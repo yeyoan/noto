@@ -16,7 +16,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Sidebar = ({ addNote, pageSetter, notebooks, tags }) => {
+const Sidebar = ({ addNote, pageSetter, folderSetter, notebooks, tags }) => {
   const classes = useStyles();
 
   return (
@@ -31,7 +31,7 @@ const Sidebar = ({ addNote, pageSetter, notebooks, tags }) => {
       <User name="John Doe" />
       <SearchBar />
       <NewNoteDialog addNote={addNote} notebooks={notebooks} />
-      <Navigation pageSetter={pageSetter} notebooks={notebooks} tags={tags} />
+      <Navigation pageSetter={pageSetter} folderSetter={folderSetter} notebooks={notebooks} tags={tags} />
     </Drawer>
   );
 };

@@ -20,14 +20,26 @@ const useStyles = makeStyles(theme => ({
 
 function App({ dnotes, dnotebooks, dtags }) {
   const classes = useStyles();
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [notes, setNotes] = useState(dnotes);
   const [notebooks, setNotebooks] = useState(dnotebooks);
   const [tags, setTags] = useState(dtags);
+  const [openNote, setOpenNote] = useState(1);
+
+  // OPTIONS: all, notebook, tag, trash
+  const [openFolder, setOpenFolder] = useState('all')
 
   const pageSetter = pageNumber => {
     setPage(pageNumber);
   };
+
+  const folderSetter = folder => {
+    setOpenFolder(folder);
+  }
+
+  const noteSetter = noteId => {
+    setOpenNote(noteId);
+  }
 
   const addNote = note => {
     setNotes(notes.concat(note));
@@ -45,15 +57,16 @@ function App({ dnotes, dnotebooks, dtags }) {
           <Sidebar
             addNote={addNote}
             pageSetter={pageSetter}
+            folderSetter={folderSetter}
             notebooks={notebooks}
             tags={tags}
           />
         </Grid>
         <Grid item xs={4}>
-          <Bridge page={page} notes={notes} notebooks={notebooks} tags={tags} />
+          <Bridge page={page} openFolder={openFolder} notes={notes} notebooks={notebooks} tags={tags} noteSetter={noteSetter} />
         </Grid>
         <Grid item xs={6}>
-          <NoteView note={notes[0]} />
+          <NoteView note={notes.filter(note => note.id === openNote)[0]} />
         </Grid>
       </Grid>
     </ThemeProvider>

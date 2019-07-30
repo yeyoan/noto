@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import {
   ListItem,
@@ -21,7 +21,9 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const NoteList = ({ notes }) => {
+const NoteList = ({ notes, noteSetter }) => {
+  const [selectedNote, setSelectedNote] = useState(1);
+
   // TODO: handle text overflow better
   const truncateContent = content => {
     if (content.indexOf("\n") === -1) {
@@ -32,7 +34,16 @@ const NoteList = ({ notes }) => {
 
   const getItems = () =>
     notes.map((note, index) => (
-      <ListItem button key={index} divider>
+      <ListItem
+        button
+        selected={selectedNote === note.id}
+        onClick={() => {
+          noteSetter(note.id);
+          setSelectedNote(note.id);
+        }}
+        key={index}
+        divider
+      >
         <ListItemText
           primary={note.title}
           secondary={truncateContent(note.content)}
@@ -50,7 +61,7 @@ const NoteList = ({ notes }) => {
   );
 };
 
-const NoteListView = ({ name, notes }) => {
+const NoteListView = ({ name, notes, noteSetter }) => {
   const classes = useStyles();
 
   return (
@@ -63,7 +74,7 @@ const NoteListView = ({ name, notes }) => {
           {notes.length} {notes.length === 1 ? "note" : "notes"}
         </Typography>
       </Container>
-      <NoteList notes={notes} />
+      <NoteList notes={notes} noteSetter={noteSetter} />
     </Box>
   );
 };

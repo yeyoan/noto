@@ -20,20 +20,19 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Navigation = ({ pageSetter, notebooks, tags }) => {
+const Navigation = ({ pageSetter, folderSetter, notebooks, tags }) => {
   const classes = useStyles();
-  const [selectedPage, setSelectedPage] = useState(1);
+  const [selected, setSelected] = useState({ id: 0, folder: 'all' });
   const [openNotebooks, setOpenNotebooks] = useState(false);
   const [openTags, setOpenTags] = useState(false);
 
   const getNotebooks = () => {
     return notebooks.map((notebook, index) => {
-      const i = 2 + (index + 1) / 10;
       return (
         <ListItem
           button
-          onClick={onClick(i)}
-          selected={selectedPage === i}
+          onClick={onClick(notebook.id, 'notebook')}
+          selected={selected.id === notebook.id && selected.folder === 'notebook'}
           key={index}
           className={classes.nested}
         >
@@ -45,37 +44,37 @@ const Navigation = ({ pageSetter, notebooks, tags }) => {
 
   const getTags = () => {
     return tags.map((tag, index) => {
-      const i = 3 + (index + 1) / 10;
       return (
         <ListItem
           button
-          onClick={onClick(i)}
-          selected={selectedPage === i}
+          onClick={onClick(tag.id, 'tag')}
+          selected={selected.id === tag.id && selected.folder === 'tag'}
           key={index}
           className={classes.nested}
         >
-          <ListItemText primary={tag} />
+          <ListItemText primary={tag.name} />
         </ListItem>
       );
     });
   };
 
-  const onDropDownClick = (value, setter, pageNumber) => {
+  const onDropDownClick = (value, setter) => {
     return () => {
       setter(!value);
     };
   };
 
-  const onClick = page => {
+  const onClick = (page, folder) => {
     return () => {
       pageSetter(page);
-      setSelectedPage(page);
+      folderSetter(folder)
+      setSelected({ id: page, folder: folder });
     };
   };
 
   return (
     <List>
-      <ListItem button onClick={onClick(1)} selected={selectedPage === 1}>
+      <ListItem button onClick={onClick(0, 'all')} selected={selected.id === 0 && selected.folder === 'all'}>
         <ListItemIcon>
           <NoteIcon />
         </ListItemIcon>
@@ -83,8 +82,7 @@ const Navigation = ({ pageSetter, notebooks, tags }) => {
       </ListItem>
       <ListItem
         button
-        onClick={onDropDownClick(openNotebooks, setOpenNotebooks, 2)}
-        selected={selectedPage === 2}
+        onClick={onDropDownClick(openNotebooks, setOpenNotebooks)}
       >
         <ListItemIcon>
           <BookIcon />
@@ -99,8 +97,7 @@ const Navigation = ({ pageSetter, notebooks, tags }) => {
       </Collapse>
       <ListItem
         button
-        onClick={onDropDownClick(openTags, setOpenTags, 3)}
-        selected={selectedPage === 3}
+        onClick={onDropDownClick(openTags, setOpenTags)}
       >
         <ListItemIcon>
           <LocalOfferIcon />
@@ -113,7 +110,7 @@ const Navigation = ({ pageSetter, notebooks, tags }) => {
           {getTags()}
         </List>
       </Collapse>
-      <ListItem button onClick={onClick(4)} selected={selectedPage === 4}>
+      <ListItem button onClick={onClick(-1, 'trash')} selected={selected.id === -1 && selected.folder === 'trash'}>
         <ListItemIcon>
           <DeleteIcon />
         </ListItemIcon>
