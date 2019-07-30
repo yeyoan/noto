@@ -3,8 +3,17 @@ import { makeStyles } from "@material-ui/core/styles";
 import Sidebar from "./components/Sidebar";
 import NoteView from "./components/NoteView";
 import Bridge from "./components/Bridge";
-import { Grid, createMuiTheme, CssBaseline } from "@material-ui/core";
+import { createMuiTheme, CssBaseline } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
+
+const useStyles = makeStyles(theme => ({
+  root: {
+    display: "flex"
+  },
+  content: {
+    flexGrow: 1
+  }
+}));
 
 const theme = createMuiTheme({
   palette: {
@@ -12,22 +21,16 @@ const theme = createMuiTheme({
   }
 });
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1
-  }
-}));
-
-function App({ dnotes, dnotebooks, dtags }) {
+function App(props) {
   const classes = useStyles();
   const [page, setPage] = useState(0);
-  const [notes, setNotes] = useState(dnotes);
-  const [notebooks, setNotebooks] = useState(dnotebooks);
-  const [tags, setTags] = useState(dtags);
+  const [notes, setNotes] = useState(props.notes);
+  const [notebooks, setNotebooks] = useState(props.notebooks);
+  const [tags, setTags] = useState(props.tags);
   const [openNote, setOpenNote] = useState(1);
 
   // OPTIONS: all, notebook, tag, trash
-  const [openFolder, setOpenFolder] = useState('all')
+  const [openFolder, setOpenFolder] = useState("all");
 
   const pageSetter = pageNumber => {
     setPage(pageNumber);
@@ -35,14 +38,19 @@ function App({ dnotes, dnotebooks, dtags }) {
 
   const folderSetter = folder => {
     setOpenFolder(folder);
-  }
+  };
 
   const noteSetter = noteId => {
     setOpenNote(noteId);
-  }
+  };
 
   const addNote = note => {
     setNotes(notes.concat(note));
+  };
+
+  const deleteNote = noteId => {
+    notes.find(note => note.id === noteId).deleted = true;
+    setOpenNote(-1);
   };
 
   const addNotebook = notebook => {
@@ -51,24 +59,31 @@ function App({ dnotes, dnotebooks, dtags }) {
 
   return (
     <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <Grid container className={classes.root}>
-        <Grid item>
-          <Sidebar
-            addNote={addNote}
-            pageSetter={pageSetter}
-            folderSetter={folderSetter}
+      <div className={classes.root}>
+        <CssBaseline />
+        <Sidebar
+          addNote={addNote}
+          addNotebook={addNotebook}
+          pageSetter={pageSetter}
+          folderSetter={folderSetter}
+          notebooks={notebooks}
+          tags={tags}
+        />
+        <main className={classes.content}>
+          <Bridge
+            page={page}
+            openFolder={openFolder}
+            notes={notes}
             notebooks={notebooks}
             tags={tags}
+            noteSetter={noteSetter}
           />
-        </Grid>
-        <Grid item xs={4}>
-          <Bridge page={page} openFolder={openFolder} notes={notes} notebooks={notebooks} tags={tags} noteSetter={noteSetter} />
-        </Grid>
-        <Grid item xs={6}>
-          <NoteView note={notes.filter(note => note.id === openNote)[0]} />
-        </Grid>
-      </Grid>
+        </main>
+        <NoteView
+          note={notes.filter(note => note.id === openNote)[0]}
+          deleteNote={deleteNote}
+        />
+      </div>
     </ThemeProvider>
   );
 }

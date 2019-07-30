@@ -6,7 +6,7 @@ import {
   List,
   Container,
   Typography,
-  Box
+  Box,
 } from "@material-ui/core";
 
 const useStyles = makeStyles(theme => ({
@@ -65,14 +65,16 @@ const NoteListView = ({ name, notes, noteSetter }) => {
   const classes = useStyles();
 
   return (
-    <Box minHeight="100vh">
+    <Box style={{ maxHeight: "100%", overflowY: "auto" }}>
       <Container>
         <Typography className={classes.header} variant="h6">
           {name}
         </Typography>
-        <Typography variant="caption">
-          {notes.length} {notes.length === 1 ? "note" : "notes"}
-        </Typography>
+        <Box color="text.secondary">
+          <Typography variant="subtitle2">
+            {notes.length} {notes.length === 1 ? "note" : "notes"}
+          </Typography>
+        </Box>
       </Container>
       <NoteList notes={notes} noteSetter={noteSetter} />
     </Box>

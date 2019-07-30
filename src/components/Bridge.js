@@ -4,7 +4,7 @@ import NoteListView from "./NoteListView";
 const Bridge = ({ page, openFolder, notes, notebooks, tags, noteSetter }) => {
   if (openFolder === "all") {
     return (
-      <NoteListView name="All Notes" notes={notes} noteSetter={noteSetter} />
+      <NoteListView name="All Notes" notes={notes.filter(note => !note.deleted)} noteSetter={noteSetter} />
     );
   }
   if (openFolder === "notebook") {

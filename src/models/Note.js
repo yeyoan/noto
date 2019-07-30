@@ -6,16 +6,16 @@ export default class Note {
   constructor(
     title,
     content,
+    date = new Date(),
     notebook = new Notebook('Default'),
-    deleted = false,
-    tags = []
+    tags = [],
   ) {
     this.id = id++;
     this.title = title;
     this.content = content;
+    this.date = date;
     this.notebook = notebook;
-    this.deleted = deleted;
+    this.deleted = false;
     this.tags = tags;
-    this.date = new Date();
   }
 }

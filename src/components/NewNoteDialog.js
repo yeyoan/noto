@@ -5,45 +5,24 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import NewNote from "./NewNote";
-import {
-  Slide,
-  MenuItem,
-  Select,
-  FormControl,
-  InputLabel
-} from "@material-ui/core";
+import { MenuItem, Select, FormControl, InputLabel } from "@material-ui/core";
 import Note from "../models/Note";
-
-const Transition = React.forwardRef(function Transition(props, ref) {
-  return <Slide direction="up" ref={ref} {...props} />;
-});
+import CreateButton from "./CreateButton";
 
 const NewNoteDialog = ({ addNote, notebooks }) => {
   const [open, setOpen] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [contentInput, setContentInput] = useState("");
   const [values, setValues] = useState({
-    notebook: ""
+    notebook: notebooks[0]
   });
 
-  const getNotebooks = () => {
-    return notebooks.map((notebook, index) => {
-      return (
-        <MenuItem key={index} value={notebook}>
-          {notebook.name}
-        </MenuItem>
-      );
-    });
-  };
-
-  const handleClickOpen = () => {
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setOpen(false);
-  };
+  const getNotebooks = () =>
+    notebooks.map((notebook, index) => (
+      <MenuItem key={index} value={notebook}>
+        {notebook.name}
+      </MenuItem>
+    ));
 
   const handleChange = event => {
     setValues(oldValues => ({
@@ -54,7 +33,12 @@ const NewNoteDialog = ({ addNote, notebooks }) => {
 
   const onSubmit = event => {
     event.preventDefault();
-    const newNote = new Note(titleInput, contentInput, values.notebook);
+    const newNote = new Note(
+      titleInput,
+      contentInput,
+      new Date(),
+      values.notebook
+    );
     addNote(newNote);
     setTitleInput("");
     setContentInput("");
@@ -64,11 +48,10 @@ const NewNoteDialog = ({ addNote, notebooks }) => {
 
   return (
     <div>
-      <NewNote onClick={handleClickOpen} />
+      <CreateButton label="New Note" onClick={() => setOpen(true)} />
       <Dialog
         open={open}
-        onClose={handleClose}
-        TransitionComponent={Transition}
+        onClose={() => setOpen(false)}
         aria-labelledby="form-dialog-title"
         onSubmit={onSubmit}
       >
@@ -113,7 +96,7 @@ const NewNoteDialog = ({ addNote, notebooks }) => {
           </FormControl>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleClose} color="primary">
+          <Button onClick={() => setOpen(false)} color="primary">
             Cancel
           </Button>
           <Button onClick={onSubmit} color="primary">
