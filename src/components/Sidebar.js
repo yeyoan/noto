@@ -8,11 +8,11 @@ import NewNoteDialog from "./NewNoteDialog";
 
 const useStyles = makeStyles(theme => ({
   drawer: {
-    width: 240,
+    width: 280,
     flexShrink: 0
   },
   drawerPaper: {
-    width: 240
+    width: 280
   }
 }));
 

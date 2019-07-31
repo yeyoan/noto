@@ -5,17 +5,19 @@ import {
   Divider,
   Box,
   Drawer,
-  Chip,
   IconButton,
   Menu,
-  Grid
+  Grid,
+  MenuItem,
+  ListItemIcon
 } from "@material-ui/core";
 import BookIcon from "@material-ui/icons/BookOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
-import LocalOfferIcon from "@material-ui/icons/LocalOfferOutlined";
+import UndoIcon from "@material-ui/icons/UndoOutlined";
 import EditNoteDialog from "./EditNoteDialog";
 import DeleteNoteDialog from "./DeleteNoteDialog";
+import ChipInput from "material-ui-chip-input";
 
 const useStyles = makeStyles(theme => ({
   view: {
@@ -25,11 +27,11 @@ const useStyles = makeStyles(theme => ({
     marginRight: theme.spacing(1)
   },
   drawer: {
-    width: 840,
+    width: 740,
     flexShrink: 0
   },
   drawerPaper: {
-    width: 840
+    width: 740
   },
   chip: {
     margin: theme.spacing(0.5)
@@ -39,24 +41,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const NoteView = ({ note, editNote, deleteNote, notebooks }) => {
+const NoteView = ({
+  note,
+  editNote,
+  deleteNote,
+  restoreNote,
+  notebooks,
+  tags
+}) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
-
-  const getTags = () => {
-    return note.tags.map((tag, index) => {
-      return (
-        <Chip
-          variant="outlined"
-          size="small"
-          icon={<LocalOfferIcon />}
-          key={tag.id}
-          label={tag.name}
-          className={classes.chip}
-        />
-      );
-    });
-  };
 
   if (!note) {
     return (
@@ -90,8 +84,14 @@ const NoteView = ({ note, editNote, deleteNote, notebooks }) => {
               alignItems="center"
             >
               <Typography variant="subtitle2" gutterBottom>
-                <BookIcon fontSize="inherit" className={classes.iconLeft} />
-                {note.notebook.name}
+                {!note.deleted ? (
+                  <div>
+                    <BookIcon fontSize="inherit" className={classes.iconLeft} />
+                    {note.notebook.name}
+                  </div>
+                ) : (
+                  <div />
+                )}
               </Typography>
             </Box>
           </Grid>
@@ -114,21 +114,47 @@ const NoteView = ({ note, editNote, deleteNote, notebooks }) => {
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
         >
-          <EditNoteDialog
-            note={note}
-            editNote={editNote}
-            notebooks={notebooks}
-            closeMenu={() => setAnchorEl(null)}
-          />
-          <DeleteNoteDialog
-            noteTitle={note.title}
-            deleteNote={event => deleteNote(note.id)}
-            closeMenu={() => setAnchorEl(null)}
-          />
+          {!note.deleted ? (
+            <div>
+              <EditNoteDialog
+                note={note}
+                editNote={editNote}
+                notebooks={notebooks}
+                closeMenu={() => setAnchorEl(null)}
+              />
+              <DeleteNoteDialog
+                noteTitle={note.title}
+                deleteNote={event => deleteNote(note.id)}
+                closeMenu={() => setAnchorEl(null)}
+              />
+            </div>
+          ) : (
+            <MenuItem
+              onClick={() => {
+                restoreNote(note.id);
+                setAnchorEl(null);
+              }}
+            >
+              <ListItemIcon>
+                <UndoIcon />
+              </ListItemIcon>
+              Restore
+            </MenuItem>
+          )}
         </Menu>
         <Divider />
         <Container className={classes.view}>
-          {getTags()}
+          {!note.deleted ? (
+            <ChipInput
+              value={note.tags.map(tag => tag.name)}
+              onAdd={chip => tags.add(note.id, chip)}
+              onDelete={chip => tags.remove(note.id, chip)}
+              placeholder="Add tag"
+              fullWidth
+            />
+          ) : (
+            <div />
+          )}
           <Typography variant="h4" className={classes.title} gutterBottom>
             {note.title}
           </Typography>

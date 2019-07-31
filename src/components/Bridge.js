@@ -20,12 +20,12 @@ const Bridge = ({ page, openFolder, notes, notebooks, tags, noteSetter }) => {
     );
   }
   if (openFolder === 'tag') {
-    const tagName = tags.find(tag => tag.id === page).name;
-    document.title = `${tagName} - Noto`
+    const tag = tags.find(tag => tag.id === page);
+    document.title = `${tag.name} - Noto`
     return (
       <NoteListView
-        name={`Tagged '${tagName}'`}
-        notes={notes.filter(note => note.tags.includes(tags[page]) && !note.deleted)}
+        name={`Tagged '${tag.name}'`}
+        notes={notes.filter(note => note.tags.includes(tag) && !note.deleted)}
         noteSetter={noteSetter}
       />
     );

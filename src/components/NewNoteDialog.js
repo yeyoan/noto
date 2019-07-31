@@ -10,7 +10,6 @@ import {
   Select,
   FormControl,
   InputLabel,
-  Box,
   Container
 } from "@material-ui/core";
 import Note from "../models/Note";
