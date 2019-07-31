@@ -5,7 +5,14 @@ import Dialog from "@material-ui/core/Dialog";
 import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
-import { MenuItem, Select, FormControl, InputLabel } from "@material-ui/core";
+import {
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  Box,
+  Container
+} from "@material-ui/core";
 import Note from "../models/Note";
 import CreateButton from "./CreateButton";
 
@@ -48,7 +55,9 @@ const NewNoteDialog = ({ addNote, notebooks }) => {
 
   return (
     <div>
-      <CreateButton label="New Note" onClick={() => setOpen(true)} />
+      <Container>
+        <CreateButton onClick={() => setOpen(true)} />
+      </Container>
       <Dialog
         open={open}
         onClose={() => setOpen(false)}

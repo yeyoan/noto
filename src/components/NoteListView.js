@@ -76,11 +76,7 @@ const NoteList = ({ notes, noteSetter }) => {
   if (notes.length > 0) {
     return <List component="nav">{getItems()}</List>;
   }
-  return (
-    <Container>
-      <Typography variant="caption">Empty</Typography>
-    </Container>
-  );
+  return <Container />;
 };
 
 const NoteListView = ({ name, notes, noteSetter }) => {

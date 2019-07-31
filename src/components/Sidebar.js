@@ -22,7 +22,8 @@ const Sidebar = ({
   pageSetter,
   folderSetter,
   notebooks,
-  tags
+  tags,
+  theme
 }) => {
   const classes = useStyles();
 
@@ -36,7 +37,7 @@ const Sidebar = ({
       anchor="left"
       style={{ backgroundColor: "red" }}
     >
-      <User name="John Doe" />
+      <User name="John Doe" theme={theme} />
       <SearchBar />
       <NewNoteDialog addNote={addNote} notebooks={notebooks} />
       <Navigation

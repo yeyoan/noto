@@ -5,6 +5,7 @@ import NoteView from "./components/NoteView";
 import Bridge from "./components/Bridge";
 import { createMuiTheme, CssBaseline } from "@material-ui/core";
 import { ThemeProvider } from "@material-ui/styles";
+import purple from "@material-ui/core/colors/purple";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -15,7 +16,16 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const theme = createMuiTheme({
+const darkTheme = createMuiTheme({
+  palette: {
+    type: "dark",
+    primary: {
+      main: purple["200"]
+    }
+  }
+});
+
+const lightTheme = createMuiTheme({
   palette: {
     type: "light"
   }
@@ -29,9 +39,14 @@ function App(props) {
   // eslint-disable-next-line
   const [tags, setTags] = useState(props.tags);
   const [openNote, setOpenNote] = useState(1);
+  const [dark, setDark] = useState(true);
 
   // OPTIONS: all, notebook, tag, trash
   const [openFolder, setOpenFolder] = useState("all");
+
+  const setDarkTheme = value => {
+    setDark(value);
+  };
 
   const pageSetter = pageNumber => {
     setPage(pageNumber);
@@ -50,16 +65,19 @@ function App(props) {
   };
 
   const editNote = (id, title, content, notebook) => {
-    let copy = [...notes]
-    let note = copy[copy.findIndex(note => note.id === id)]
-    note.title = title
-    note.content = content
-    note.notebook = notebook
-    setNotes(copy)
-  }
+    let copy = [...notes];
+    let note = copy[copy.findIndex(note => note.id === id)];
+    note.title = title;
+    note.content = content;
+    note.notebook = notebook;
+    setNotes(copy);
+  };
 
   const deleteNote = noteId => {
-    notes.find(note => note.id === noteId).deleted = true;
+    let copy = [...notes];
+    let note = copy[copy.findIndex(note => note.id === noteId)];
+    note.deleted = true;
+    setNotes(copy);
     setOpenNote(-1);
   };
 
@@ -68,7 +86,7 @@ function App(props) {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <ThemeProvider theme={dark ? darkTheme : lightTheme}>
       <div className={classes.root}>
         <CssBaseline />
         <Sidebar
@@ -78,6 +96,7 @@ function App(props) {
           folderSetter={folderSetter}
           notebooks={notebooks}
           tags={tags}
+          theme={{ dark: dark, setDarkTheme: setDarkTheme }}
         />
         <main className={classes.content}>
           <Bridge

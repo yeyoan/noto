@@ -8,16 +8,14 @@ import {
   Chip,
   IconButton,
   Menu,
-  MenuItem,
-  Grid,
-  ListItemIcon
+  Grid
 } from "@material-ui/core";
 import BookIcon from "@material-ui/icons/BookOutlined";
 import { makeStyles } from "@material-ui/core/styles";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
 import LocalOfferIcon from "@material-ui/icons/LocalOfferOutlined";
-import DeleteIcon from "@material-ui/icons/DeleteOutlined";
 import EditNoteDialog from "./EditNoteDialog";
+import DeleteNoteDialog from "./DeleteNoteDialog";
 
 const useStyles = makeStyles(theme => ({
   view: {
@@ -70,11 +68,7 @@ const NoteView = ({ note, editNote, deleteNote, notebooks }) => {
         }}
         anchor="right"
       >
-        <Container className={classes.view}>
-          <Box color="text.hint" alignItems="center" justifyContent="center">
-            <Typography variant="h4">No note open</Typography>
-          </Box>
-        </Container>
+        <Container />
       </Drawer>
     );
   }
@@ -126,17 +120,11 @@ const NoteView = ({ note, editNote, deleteNote, notebooks }) => {
             notebooks={notebooks}
             closeMenu={() => setAnchorEl(null)}
           />
-          <MenuItem
-            onClick={() => {
-              setAnchorEl(null);
-              deleteNote(note.id);
-            }}
-          >
-            <ListItemIcon>
-              <DeleteIcon />
-            </ListItemIcon>
-            Delete
-          </MenuItem>
+          <DeleteNoteDialog
+            noteTitle={note.title}
+            deleteNote={event => deleteNote(note.id)}
+            closeMenu={() => setAnchorEl(null)}
+          />
         </Menu>
         <Divider />
         <Container className={classes.view}>

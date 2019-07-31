@@ -12,13 +12,18 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const CreateButton = ({ label, onClick }) => {
+const CreateButton = ({ onClick }) => {
   const classes = useStyles();
 
   return (
-    <Button onClick={onClick} variant='text' size="large" color="primary" className={classes.button}>
+    <Button
+      onClick={onClick}
+      size="large"
+      color="primary"
+      className={classes.button}
+    >
       <AddCircle className={classes.leftIcon} />
-      {label}
+      New Note
     </Button>
   );
 };

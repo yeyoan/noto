@@ -7,7 +7,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import Notebook from "../models/Notebook";
-import { ListItem, ListItemIcon, ListItemText } from "@material-ui/core";
+import { ListItem, ListItemIcon, ListItemText, DialogContentText } from "@material-ui/core";
 
 const NewNotebookDialog = ({ className, addNotebook }) => {
   const [open, setOpen] = useState(false);
@@ -35,8 +35,11 @@ const NewNotebookDialog = ({ className, addNotebook }) => {
         aria-labelledby="form-dialog-title"
         onSubmit={onSubmit}
       >
-        <DialogTitle id="form-dialog-title">New Notebook</DialogTitle>
+        <DialogTitle id="form-dialog-title">Create new notebook</DialogTitle>
         <DialogContent>
+          <DialogContentText id="alert-dialog-description">
+            Notebooks are useful for grouping notes around a common topic.
+          </DialogContentText>
           <TextField
             autoFocus
             margin="dense"

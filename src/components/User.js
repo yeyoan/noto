@@ -6,8 +6,13 @@ import {
   ListItemText,
   Avatar,
   ListItemAvatar,
-  IconButton
+  Menu,
+  MenuItem,
+  IconButton,
+  ListItemIcon
 } from "@material-ui/core";
+import InvertColorsIcon from "@material-ui/icons/InvertColors";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
 
 const useStyles = makeStyles(theme => ({
   avatar: {
@@ -15,19 +20,53 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const User = ({ name }) => {
+const User = ({ name, theme }) => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = React.useState(null);
 
   return (
-    <ListItem>
-      <ListItemAvatar>
-        <Avatar className={classes.avatar}>{name.charAt(0)}{name.split(' ')[1].charAt(0)}</Avatar>
-      </ListItemAvatar>
-      <ListItemText primary={name} />
-      <IconButton edge="end" aria-label="more">
-        <ExpandMoreIcon />
-      </IconButton>
-    </ListItem>
+    <div>
+      <ListItem>
+        <ListItemAvatar>
+          <Avatar className={classes.avatar}>
+            {name.charAt(0)}
+            {name.split(" ")[1].charAt(0)}
+          </Avatar>
+        </ListItemAvatar>
+        <ListItemText primary={name} />
+        <IconButton
+          edge="end"
+          onClick={event => setAnchorEl(event.currentTarget)}
+        >
+          <ExpandMoreIcon />
+        </IconButton>
+      </ListItem>
+      <Menu
+        id="simple-menu"
+        anchorEl={anchorEl}
+        keepMounted
+        open={Boolean(anchorEl)}
+        onClose={() => setAnchorEl(null)}
+      >
+        <MenuItem
+          onClick={() => {
+            theme.setDarkTheme(!theme.dark);
+            setAnchorEl(null);
+          }}
+        >
+          <ListItemIcon>
+            <InvertColorsIcon />
+          </ListItemIcon>
+          Enable {theme.dark ? "Light" : "Dark"} Mode
+        </MenuItem>
+        <MenuItem onClick={() => setAnchorEl(null)}>
+          <ListItemIcon>
+            <ExitToAppIcon />
+          </ListItemIcon>
+          Logout
+        </MenuItem>
+      </Menu>
+    </div>
   );
 };
 
