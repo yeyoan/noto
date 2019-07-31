@@ -24,14 +24,14 @@ const tags = [
 
 const notes = [
   new Note(
-    "Welcome to Noto",
+    "Welcome to Noto 📝",
     "To get started, click the 'New Note' button on the sidebar.",
     new Date(),
     notebooks[0],
     [tags[0]]
   ),
   new Note(
-    "'80s Movies Bucket List",
+    "'80s Movies Bucket List 🎬🍿",
     "1. Breakfast Club\n2. Sixteen Candles\n3. Top Gun\n4. Back to the Future",
     new Date(2018, 10, 22, 0, 0, 0, 0),
     notebooks[2],
@@ -41,14 +41,20 @@ const notes = [
     "Kanye Discography Ranking",
     "1. ye\n1. The Life of Pablo\n1. Yeezus\n1. My Beautiful Dark Twisted Fantasy\n1. 808s & Heartbreaks\n1. Graduation\n1. Late Registration\n1. The College Dropout\n\nYou can't rank Kanye's albums, they're all amazing.",
     new Date(2019, 6, 10, 0, 0, 0, 0),
-    notebooks[1],
+    notebooks[3],
     [tags[1]]
+  ),
+  new Note(
+    "Cicero",
+    "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex",
+    new Date(2019, 2, 1, 0, 0, 0, 0),
+    notebooks[0],
   ),
   new Note(
     "Favorite Sitcoms",
     "1. Seinfeld\n2. Frasier\n3. Community\n4. Arrested Development\n5. Fawlty Towers",
     new Date(2019, 5, 12, 0, 0, 0, 0),
-    notebooks[3],
+    notebooks[1],
     [tags[3], tags[2]]
   )
 ];

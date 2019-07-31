@@ -26,6 +26,7 @@ function App(props) {
   const [page, setPage] = useState(0);
   const [notes, setNotes] = useState(props.notes);
   const [notebooks, setNotebooks] = useState(props.notebooks);
+  // eslint-disable-next-line
   const [tags, setTags] = useState(props.tags);
   const [openNote, setOpenNote] = useState(1);
 
@@ -47,6 +48,15 @@ function App(props) {
   const addNote = note => {
     setNotes(notes.concat(note));
   };
+
+  const editNote = (id, title, content, notebook) => {
+    let copy = [...notes]
+    let note = copy[copy.findIndex(note => note.id === id)]
+    note.title = title
+    note.content = content
+    note.notebook = notebook
+    setNotes(copy)
+  }
 
   const deleteNote = noteId => {
     notes.find(note => note.id === noteId).deleted = true;
@@ -81,7 +91,9 @@ function App(props) {
         </main>
         <NoteView
           note={notes.filter(note => note.id === openNote)[0]}
+          editNote={editNote}
           deleteNote={deleteNote}
+          notebooks={notebooks}
         />
       </div>
     </ThemeProvider>

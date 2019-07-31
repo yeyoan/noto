@@ -8,21 +8,19 @@ const Bridge = ({ page, openFolder, notes, notebooks, tags, noteSetter }) => {
     );
   }
   if (openFolder === "notebook") {
-    console.log('notebook clicked')
     return (
       <NoteListView
         name={notebooks.filter(notebook => notebook.id === page)[0].name}
-        notes={notes.filter(note => note.notebook.id === page)}
+        notes={notes.filter(note => note.notebook.id === page && !note.deleted)}
         noteSetter={noteSetter}
       />
     );
   }
   if (openFolder === 'tag') {
-    console.log('tag clicked')
     return (
       <NoteListView
-        name={tags.filter(tag => tag.id === page)[0].name}
-        notes={notes.filter(note => note.tags.includes(tags[page]))}
+        name={`Tagged '${tags.filter(tag => tag.id === page)[0].name}'`}
+        notes={notes.filter(note => note.tags.includes(tags[page]) && !note.deleted)}
         noteSetter={noteSetter}
       />
     );

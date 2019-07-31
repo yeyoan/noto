@@ -9,12 +9,15 @@ import {
   IconButton,
   Menu,
   MenuItem,
-  Grid
+  Grid,
+  ListItemIcon
 } from "@material-ui/core";
 import BookIcon from "@material-ui/icons/BookOutlined";
-import { distanceInWordsToNow } from "date-fns";
 import { makeStyles } from "@material-ui/core/styles";
 import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import LocalOfferIcon from "@material-ui/icons/LocalOfferOutlined";
+import DeleteIcon from "@material-ui/icons/DeleteOutlined";
+import EditNoteDialog from "./EditNoteDialog";
 
 const useStyles = makeStyles(theme => ({
   view: {
@@ -38,13 +41,22 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const NoteView = ({ note, deleteNote }) => {
+const NoteView = ({ note, editNote, deleteNote, notebooks }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const getTags = () => {
     return note.tags.map((tag, index) => {
-      return <Chip key={tag.id} label={tag.name} className={classes.chip} />;
+      return (
+        <Chip
+          variant="outlined"
+          size="small"
+          icon={<LocalOfferIcon />}
+          key={tag.id}
+          label={tag.name}
+          className={classes.chip}
+        />
+      );
     });
   };
 
@@ -108,14 +120,21 @@ const NoteView = ({ note, deleteNote }) => {
           open={Boolean(anchorEl)}
           onClose={() => setAnchorEl(null)}
         >
-          <MenuItem onClick={() => setAnchorEl(null)}>Edit</MenuItem>
-          <MenuItem onClick={() => setAnchorEl(null)}>Move</MenuItem>
+          <EditNoteDialog
+            note={note}
+            editNote={editNote}
+            notebooks={notebooks}
+            closeMenu={() => setAnchorEl(null)}
+          />
           <MenuItem
             onClick={() => {
               setAnchorEl(null);
               deleteNote(note.id);
             }}
           >
+            <ListItemIcon>
+              <DeleteIcon />
+            </ListItemIcon>
             Delete
           </MenuItem>
         </Menu>
@@ -131,9 +150,6 @@ const NoteView = ({ note, deleteNote }) => {
             gutterBottom
           >
             {note.content}
-          </Typography>
-          <Typography variant="caption" gutterBottom>
-            {distanceInWordsToNow(note.date, { addSuffix: true })}
           </Typography>
         </Container>
       </Box>

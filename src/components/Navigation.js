@@ -5,7 +5,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Collapse
+  Collapse,
 } from "@material-ui/core";
 import NoteIcon from "@material-ui/icons/Note";
 import BookIcon from "@material-ui/icons/Book";

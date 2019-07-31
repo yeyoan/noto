@@ -6,8 +6,9 @@ import {
   List,
   Container,
   Typography,
-  Box,
+  Box
 } from "@material-ui/core";
+import { distanceInWordsToNow } from "date-fns";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -18,18 +19,28 @@ const useStyles = makeStyles(theme => ({
     marginLeft: theme.spacing(1),
     marginRight: theme.spacing(1),
     width: 200
+  },
+  tertiary: {
+    marginTop: theme.spacing(1)
+  },
+  textItem: {
+    paddingLeft: theme.spacing(2),
+    paddingRight: theme.spacing(2)
   }
 }));
 
 const NoteList = ({ notes, noteSetter }) => {
   const [selectedNote, setSelectedNote] = useState(1);
+  const classes = useStyles();
 
-  // TODO: handle text overflow better
-  const truncateContent = content => {
+  const truncate = content => {
+    const charLength = 100;
     if (content.indexOf("\n") === -1) {
-      return content;
+      return content.length < charLength
+        ? content
+        : `${content.slice(0, charLength)}...`;
     }
-    return content.substring(0, content.indexOf("\n"));
+    return truncate(content.substring(0, content.indexOf("\n")));
   };
 
   const getItems = () =>
@@ -45,8 +56,19 @@ const NoteList = ({ notes, noteSetter }) => {
         divider
       >
         <ListItemText
-          primary={note.title}
-          secondary={truncateContent(note.content)}
+          disableTypography
+          className={classes.textItem}
+          primary={<Typography variant="subtitle1">{note.title}</Typography>}
+          secondary={
+            <Box>
+              <Box color="text.secondary">{truncate(note.content)}</Box>
+              <Box color="text.hint" className={classes.tertiary}>
+                <Typography variant="caption">
+                  {distanceInWordsToNow(note.date, { addSuffix: true })}
+                </Typography>
+              </Box>
+            </Box>
+          }
         />
       </ListItem>
     ));
@@ -56,7 +78,7 @@ const NoteList = ({ notes, noteSetter }) => {
   }
   return (
     <Container>
-      <Typography variant="caption">No notes added</Typography>
+      <Typography variant="caption">Empty</Typography>
     </Container>
   );
 };
