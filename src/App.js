@@ -49,7 +49,7 @@ function App(props) {
   // eslint-disable-next-line
   const [tags, setTags] = useState(props.tags);
   const [openNote, setOpenNote] = useState(1);
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(false)
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 

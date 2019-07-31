@@ -9,54 +9,35 @@ import Tag from "./models/Tag";
 
 const notebooks = [
   new Notebook("My Notebook"),
-  new Notebook("TV"),
-  new Notebook("Movies"),
-  new Notebook("Music")
 ];
 
 const tags = [
   new Tag("Noto"),
-  new Tag("The Beatles"),
-  new Tag("Frasier"),
-  new Tag("Comedy"),
-  new Tag("1980s")
+  new Tag("WIP"),
 ];
 
 const notes = [
   new Note(
     "Welcome to Noto 📝",
-    "To get started, click the 'New Note' button on the sidebar.",
-    new Date(),
+    "To get started, click the 'New Note' button on the sidebar.\n\nCreate notebooks to organize notes with a common topic. Add tags at the top each note to further categorize them.",
+    new Date(2019, 6, 29),
     notebooks[0],
     [tags[0]]
   ),
   new Note(
-    "'80s Movies Bucket List 🎬🍿",
-    "1. Breakfast Club\n2. Sixteen Candles\n3. Top Gun\n4. Back to the Future",
-    new Date(2018, 10, 22, 0, 0, 0, 0),
-    notebooks[2],
-    [tags[4]]
+    "TODO 📃",
+    "✅ Add dark mode 🌙\n❌ Add login/logout 👤\n❌ Implement search 🔍\n✅ Tag creation/removal in note view\n✅ CRUD notes\n❌ Rename and delete notebooks 📓\n❌ Empty the trash 🗑\n❌ Order notes displayed (alphabetical, date created, ascending/descending)\n❌ Use a rich text editor (maybe Draft.js)",
+    new Date(2019, 6, 31),
+    notebooks[0],
+    [...tags]
   ),
   new Note(
-    "The Beatles",
-    "1. Sgt. Pepper's\n2. Abbey Road\n3. Rubber Sould\n4. Revolver\n5. Haven't listened to the rest.",
-    new Date(2019, 6, 10, 0, 0, 0, 0),
-    notebooks[3],
-    [tags[1]]
+    "Known Issues 🐛",
+    "- When deleting a note, it's still selected in the folder.\n- NOT responsive on mobile.\n- When tag gets deleted while in the same tag folder, user gets redirected to 'All Notes', but no list item is selected in the sidebar.\n- Cannot move arrow keys up or down in edit note dialog.\n- React complains about something in edit note dialog (most likely related to above).",
+    new Date(2019, 6, 31),
+    notebooks[0],
+    [...tags]
   ),
-  new Note(
-    "Cicero",
-    "Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex",
-    new Date(2019, 2, 1, 0, 0, 0, 0),
-    notebooks[0]
-  ),
-  new Note(
-    "Classic Sitcoms",
-    "Some from the '70s all the way to last year\n\n1. Seinfeld\n2. Frasier\n3. Community\n4. Arrested Development\n5. Fawlty Towers",
-    new Date(2019, 5, 12, 0, 0, 0, 0),
-    notebooks[1],
-    [tags[3], tags[2]]
-  )
 ];
 
 ReactDOM.render(
