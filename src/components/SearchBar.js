@@ -43,7 +43,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const SearchBar = () => {
+const SearchBar = ({ searchTerm, folderSetter }) => {
   const classes = useStyles();
 
   return (
@@ -52,6 +52,9 @@ const SearchBar = () => {
         <SearchIcon />
       </div>
       <InputBase
+        value={searchTerm.value}
+        onChange={event => searchTerm.update(event.target.value)}
+        onClick={() => folderSetter("search")}
         placeholder="Search notes..."
         classes={{
           root: classes.inputRoot,

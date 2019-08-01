@@ -23,7 +23,8 @@ const Sidebar = ({
   folderSetter,
   notebooks,
   tags,
-  theme
+  theme,
+  searchTerm
 }) => {
   const classes = useStyles();
 
@@ -38,7 +39,7 @@ const Sidebar = ({
       style={{ backgroundColor: "red" }}
     >
       <User name="John Doe" theme={theme} />
-      <SearchBar />
+      <SearchBar searchTerm={searchTerm} folderSetter={folderSetter} />
       <NewNoteDialog addNote={addNote} notebooks={notebooks} />
       <Navigation
         addNotebook={addNotebook}

@@ -49,9 +49,10 @@ function App(props) {
   // eslint-disable-next-line
   const [tags, setTags] = useState(props.tags);
   const [openNote, setOpenNote] = useState(1);
-  const [dark, setDark] = useState(false)
+  const [dark, setDark] = useState(true);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");
 
   // OPTIONS: all, notebook, tag, trash
   const [openFolder, setOpenFolder] = useState("all");
@@ -169,6 +170,10 @@ function App(props) {
           notebooks={notebooks}
           tags={tags}
           theme={{ dark: dark, setDarkTheme: setDarkTheme }}
+          searchTerm={{
+            value: searchTerm,
+            update: value => setSearchTerm(value)
+          }}
         />
         <main className={classes.content}>
           <Bridge
@@ -178,6 +183,10 @@ function App(props) {
             notebooks={notebooks}
             tags={tags}
             noteSetter={noteSetter}
+            searchTerm={{
+              value: searchTerm,
+              update: value => setSearchTerm(value)
+            }}
           />
         </main>
         <NoteView

@@ -26,7 +26,7 @@ const notes = [
   ),
   new Note(
     "TODO 📃",
-    "✅ Add dark mode 🌙\n❌ Add login/logout 👤\n❌ Implement search 🔍\n✅ Tag creation/removal in note view\n✅ CRUD notes\n❌ Rename and delete notebooks 📓\n❌ Empty the trash 🗑\n❌ Order notes displayed (alphabetical, date created, ascending/descending)\n❌ Use a rich text editor (maybe Draft.js)",
+    "✅ Add dark mode 🌙\n❌ Add login/logout 👤\n✅ Implement search 🔍\n✅ Tag creation/removal in note view\n✅ CRUD notes\n❌ Rename and delete notebooks 📓\n❌ Empty the trash 🗑\n❌ Order notes displayed (alphabetical, date created, ascending/descending)\n❌ Use a rich text editor (maybe Draft.js)",
     new Date(2019, 6, 31),
     notebooks[0],
     [...tags]
