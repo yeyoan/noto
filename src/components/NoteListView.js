@@ -6,9 +6,18 @@ import {
   List,
   Container,
   Typography,
-  Box
+  Box,
+  IconButton,
+  Grid,
+  Menu,
+  MenuItem,
+  ListItemIcon
 } from "@material-ui/core";
 import { distanceInWordsToNow } from "date-fns";
+import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import DeleteIcon from "@material-ui/icons/DeleteOutlined";
+import RenameNotebookDialog from "./RenameNotebookDialog copy";
+import EmptyTrashDialog from "./EmptyTrashDialog";
 
 const useStyles = makeStyles(theme => ({
   header: {
@@ -79,8 +88,61 @@ const NoteList = ({ notes, noteSetter }) => {
   return <Container />;
 };
 
-const NoteListView = ({ name, notes, noteSetter }) => {
+const NoteListView = ({ name, notes, noteSetter, menu, notebooks, trash }) => {
   const classes = useStyles();
+  const [anchorEl, setAnchorEl] = useState(null);
+
+  const getMenu = () => {
+    if (!menu || (menu !== "notebook" && notes.length === 0)) {
+      return <div />;
+    } else {
+      return (
+        <div>
+          <IconButton onClick={event => setAnchorEl(event.currentTarget)}>
+            <MoreHorizIcon />
+          </IconButton>
+          <Menu
+            id="simple-menu"
+            anchorEl={anchorEl}
+            keepMounted
+            open={Boolean(anchorEl)}
+            onClose={() => setAnchorEl(null)}
+          >
+            {menu === "notebook" ? (
+              <div>
+                <RenameNotebookDialog
+                  id={notebooks.id}
+                  name={name}
+                  rename={notebooks.rename}
+                  setAnchorEl={() => setAnchorEl(null)}
+                />
+                {notes.length === 0 ? (
+                  <MenuItem
+                    onClick={() => {
+                      setAnchorEl(null);
+                      notebooks.delete(notebooks.id);
+                    }}
+                  >
+                    <ListItemIcon>
+                      <DeleteIcon />
+                    </ListItemIcon>
+                    Delete notebook
+                  </MenuItem>
+                ) : (
+                  <div />
+                )}
+              </div>
+            ) : (
+              <EmptyTrashDialog
+                emptyTrash={trash.empty}
+                closeMenu={() => setAnchorEl(null)}
+              />
+            )}
+          </Menu>
+        </div>
+      );
+    }
+  };
 
   return (
     <Box style={{ maxHeight: "100%", overflowY: "auto" }}>
@@ -88,11 +150,18 @@ const NoteListView = ({ name, notes, noteSetter }) => {
         <Typography className={classes.header} variant="h6">
           {name}
         </Typography>
-        <Box color="text.secondary">
-          <Typography variant="subtitle2">
-            {notes.length} {notes.length === 1 ? "note" : "notes"}
-          </Typography>
-        </Box>
+        <Grid container alignItems="center">
+          <Grid item xs={11}>
+            <Box color="text.secondary">
+              <Typography variant="subtitle2">
+                {notes.length} {notes.length === 1 ? "note" : "notes"}
+              </Typography>
+            </Box>
+          </Grid>
+          <Grid item xs={1}>
+            {getMenu()}
+          </Grid>
+        </Grid>
       </Container>
       <NoteList notes={notes} noteSetter={noteSetter} />
     </Box>

@@ -26,15 +26,15 @@ const notes = [
   ),
   new Note(
     "TODO 📃",
-    "✅ Add dark mode 🌙\n❌ Add login/logout 👤\n✅ Implement search 🔍\n✅ Tag creation/removal in note view\n✅ CRUD notes\n❌ Rename and delete notebooks 📓\n❌ Empty the trash 🗑\n❌ Order notes displayed (alphabetical, date created, ascending/descending)\n❌ Use a rich text editor (maybe Draft.js)",
-    new Date(2019, 6, 31),
+    "✅ Add dark mode 🌙\n❌ Add login/logout 👤\n✅ Implement search 🔍\n✅ Tag creation/removal in note view\n✅ CRUD notes\n✅ Rename and delete notebooks 📓\n❌ Empty the trash 🗑\n❌ Order notes displayed (alphabetical, date created, ascending/descending)\n❌ Use a rich text editor (maybe Draft.js)",
+    new Date(2019, 7, 1),
     notebooks[0],
     [...tags]
   ),
   new Note(
     "Known Issues 🐛",
-    "- When deleting a note, it's still selected in the folder.\n- NOT responsive on mobile.\n- When tag gets deleted while in the same tag folder, user gets redirected to 'All Notes', but no list item is selected in the sidebar.\n- Cannot move arrow keys up or down in edit note dialog.\n- React complains about something in edit note dialog (most likely related to above).",
-    new Date(2019, 6, 31),
+    "- When deleting a note, it's still selected in the folder.\n- NOT responsive on mobile.\n- All Notes not selected when redirected there.\n- Cannot move arrow keys up or down in edit note dialog.\n- React complains about something in edit note dialog (most likely related to above).",
+    new Date(2019, 7, 1),
     notebooks[0],
     [...tags]
   ),

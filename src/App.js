@@ -99,6 +99,25 @@ function App(props) {
     setOpenSnackbar(true);
   };
 
+  const renameNotebook = (id, name) => {
+    let copy = [...notebooks];
+    let notebook = copy[copy.findIndex(notebook => notebook.id === id)];
+    notebook.name = name;
+    setNotebooks(copy);
+    setSnackbarMessage("Notebook renamed");
+    setOpenSnackbar(true);
+  };
+
+  const deleteNotebook = id => {
+    let copy = [...notebooks];
+    let notebook = copy.find(notebook => notebook.id === id);
+    copy.splice(copy.indexOf(notebook), 1);
+    setNotebooks(copy);
+    setOpenFolder("all");
+    setSnackbarMessage(`Deleted ${notebook.name}`);
+    setOpenSnackbar(true);
+  };
+
   const deleteNote = noteId => {
     let copy = [...notes];
     let note = copy[copy.findIndex(note => note.id === noteId)];
@@ -158,6 +177,20 @@ function App(props) {
     }
   };
 
+  const emptyTrash = () => {
+    const recursiveDeletion = (all, trash) => {
+      if (trash === 0) {
+        setNotes(all);
+        setSnackbarMessage("Trash emptied");
+        setOpenSnackbar(true);
+        return;
+      }
+      all.splice(all.findIndex(note => note.deleted), 1);
+      recursiveDeletion(all, trash - 1);
+    };
+    recursiveDeletion([...notes], notes.filter(note => note.deleted).length);
+  };
+
   return (
     <ThemeProvider theme={dark ? darkTheme : lightTheme}>
       <div className={classes.root}>
@@ -170,8 +203,8 @@ function App(props) {
           notebooks={notebooks}
           tags={tags}
           theme={{ dark: dark, setDarkTheme: setDarkTheme }}
-          searchTerm={{
-            value: searchTerm,
+          search={{
+            term: searchTerm,
             update: value => setSearchTerm(value)
           }}
         />
@@ -180,7 +213,12 @@ function App(props) {
             page={page}
             openFolder={openFolder}
             notes={notes}
-            notebooks={notebooks}
+            notebooks={{
+              all: notebooks,
+              rename: renameNotebook,
+              delete: deleteNotebook
+            }}
+            trash={{ empty: emptyTrash }}
             tags={tags}
             noteSetter={noteSetter}
             searchTerm={{

@@ -13,7 +13,7 @@ import {
 } from "@material-ui/core";
 import BookIcon from "@material-ui/icons/BookOutlined";
 import { makeStyles } from "@material-ui/core/styles";
-import MoreHorizIcon from "@material-ui/icons/MoreHoriz";
+import MoreHorizIcon from "@material-ui/icons/MoreVert";
 import UndoIcon from "@material-ui/icons/UndoOutlined";
 import EditNoteDialog from "./EditNoteDialog";
 import DeleteNoteDialog from "./DeleteNoteDialog";

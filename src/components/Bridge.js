@@ -6,6 +6,7 @@ const Bridge = ({
   openFolder,
   notes,
   notebooks,
+  trash,
   tags,
   noteSetter,
   searchTerm
@@ -19,6 +20,7 @@ const Bridge = ({
   };
 
   if (openFolder === "search") {
+    document.title = "Search Results - Noto";
     return (
       <NoteListView
         name={
@@ -42,13 +44,16 @@ const Bridge = ({
     );
   }
   if (openFolder === "notebook") {
-    const notebookName = notebooks.find(notebook => notebook.id === page).name;
+    const notebookName = notebooks.all.find(notebook => notebook.id === page)
+      .name;
     document.title = `${notebookName} - Noto`;
     return (
       <NoteListView
         name={notebookName}
         notes={notes.filter(note => note.notebook.id === page && !note.deleted)}
         noteSetter={noteSetter}
+        menu="notebook"
+        notebooks={{ ...notebooks, id: page }}
       />
     );
   }
@@ -70,6 +75,8 @@ const Bridge = ({
         name="Trash"
         notes={notes.filter(note => note.deleted)}
         noteSetter={noteSetter}
+        menu="trash"
+        trash={trash}
       />
     );
   }
