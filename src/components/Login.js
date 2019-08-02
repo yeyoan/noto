@@ -48,7 +48,9 @@ const Login = ({ user, say }) => {
     confirmPassword: ""
   });
   const [createAccount, setCreateAccount] = useState(false);
-  document.title = "Welcome Back";
+  const [title, setTitle] = useState("Welcome Back");
+
+  document.title = title;
 
   const validate = event => {
     event.preventDefault();
@@ -177,6 +179,7 @@ const Login = ({ user, say }) => {
                           confirmPassword: ""
                         });
                         setCreateAccount(false);
+                        setTitle("Welcome Back");
                       }
                     }}
                   >
@@ -195,7 +198,10 @@ const Login = ({ user, say }) => {
                 <Grid item xs={12}>
                   <Button
                     size="small"
-                    onClick={event => setCreateAccount(false)}
+                    onClick={event => {
+                      setCreateAccount(false);
+                      setTitle("Welcome Back");
+                    }}
                     fullWidth
                     color="primary"
                   >
@@ -253,7 +259,10 @@ const Login = ({ user, say }) => {
                 <Grid item xs={12}>
                   <Button
                     size="small"
-                    onClick={event => setCreateAccount(true)}
+                    onClick={event => {
+                      setCreateAccount(true);
+                      setTitle("Create a Noto Account");
+                    }}
                     fullWidth
                     color="primary"
                   >
