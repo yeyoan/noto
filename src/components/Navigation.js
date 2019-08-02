@@ -5,7 +5,7 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Collapse,
+  Collapse
 } from "@material-ui/core";
 import NoteIcon from "@material-ui/icons/Note";
 import BookIcon from "@material-ui/icons/Book";
@@ -23,6 +23,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Navigation = ({
+  user,
   addNotebook,
   pageSetter,
   folderSetter,
@@ -111,6 +112,7 @@ const Navigation = ({
         <List component="div" disablePadding>
           {getNotebooks()}
           <NewNotebookDialog
+            user={user}
             className={classes.nested}
             addNotebook={addNotebook}
           />

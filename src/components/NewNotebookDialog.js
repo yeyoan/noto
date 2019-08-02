@@ -9,13 +9,13 @@ import DialogTitle from "@material-ui/core/DialogTitle";
 import Notebook from "../models/Notebook";
 import { ListItem, ListItemIcon, ListItemText, DialogContentText } from "@material-ui/core";
 
-const NewNotebookDialog = ({ className, addNotebook }) => {
+const NewNotebookDialog = ({ user, className, addNotebook }) => {
   const [open, setOpen] = useState(false);
   const [nameInput, setNameInput] = useState("");
 
   const onSubmit = event => {
     event.preventDefault();
-    const newNotebook = new Notebook(nameInput);
+    const newNotebook = new Notebook(user, nameInput);
     addNotebook(newNotebook);
     setNameInput("");
     setOpen(false);

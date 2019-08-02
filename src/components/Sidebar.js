@@ -17,6 +17,7 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const Sidebar = ({
+  user,
   addNote,
   addNotebook,
   pageSetter,
@@ -38,10 +39,11 @@ const Sidebar = ({
       anchor="left"
       style={{ backgroundColor: "red" }}
     >
-      <User name="John Doe" theme={theme} />
+      <User user={user} theme={theme} />
       <SearchBar search={search} folderSetter={folderSetter} />
-      <NewNoteDialog addNote={addNote} notebooks={notebooks} />
+      <NewNoteDialog user={user.get} addNote={addNote} notebooks={notebooks} />
       <Navigation
+        user={user.get}
         addNotebook={addNotebook}
         pageSetter={pageSetter}
         folderSetter={folderSetter}

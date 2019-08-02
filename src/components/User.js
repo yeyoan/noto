@@ -20,7 +20,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const User = ({ name, theme }) => {
+const User = ({ user, theme }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
@@ -29,11 +29,11 @@ const User = ({ name, theme }) => {
       <ListItem>
         <ListItemAvatar>
           <Avatar className={classes.avatar}>
-            {name.charAt(0)}
-            {name.split(" ")[1].charAt(0)}
+            {user.get.name.charAt(0)}
+            {user.get.name.split(" ")[1].charAt(0)}
           </Avatar>
         </ListItemAvatar>
-        <ListItemText primary={name} />
+        <ListItemText primary={user.get.name} />
         <IconButton
           edge="end"
           onClick={event => setAnchorEl(event.currentTarget)}
@@ -59,7 +59,7 @@ const User = ({ name, theme }) => {
           </ListItemIcon>
           Enable {theme.dark ? "Light" : "Dark"} Mode
         </MenuItem>
-        <MenuItem onClick={() => setAnchorEl(null)}>
+        <MenuItem onClick={() => user.signOut()}>
           <ListItemIcon>
             <ExitToAppIcon />
           </ListItemIcon>

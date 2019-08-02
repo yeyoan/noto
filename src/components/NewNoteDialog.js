@@ -15,7 +15,7 @@ import {
 import Note from "../models/Note";
 import CreateButton from "./CreateButton";
 
-const NewNoteDialog = ({ addNote, notebooks }) => {
+const NewNoteDialog = ({ user, addNote, notebooks }) => {
   const [open, setOpen] = useState(false);
   const [titleInput, setTitleInput] = useState("");
   const [contentInput, setContentInput] = useState("");
@@ -40,6 +40,7 @@ const NewNoteDialog = ({ addNote, notebooks }) => {
   const onSubmit = event => {
     event.preventDefault();
     const newNote = new Note(
+      user,
       titleInput,
       contentInput,
       new Date(),

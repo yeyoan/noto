@@ -17,7 +17,7 @@ const EditNoteDialog = ({ note, editNote, notebooks, closeMenu }) => {
   });
 
   const getNotebooks = () =>
-    notebooks.map((notebook, index) => (
+    notebooks.map(notebook => (
       <MenuItem key={notebook.id} value={notebook}>
         {notebook.name}
       </MenuItem>

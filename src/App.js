@@ -13,6 +13,8 @@ import { ThemeProvider } from "@material-ui/styles";
 import purple from "@material-ui/core/colors/purple";
 import CloseIcon from "@material-ui/icons/Close";
 import Tag from "./models/Tag";
+import Login from "./components/Login";
+import Account from "./models/Account";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -44,15 +46,18 @@ const lightTheme = createMuiTheme({
 function App(props) {
   const classes = useStyles();
   const [page, setPage] = useState(0);
+  // eslint-disable-next-line
+  const [users, setUsers] = useState(props.users);
   const [notes, setNotes] = useState(props.notes);
   const [notebooks, setNotebooks] = useState(props.notebooks);
-  // eslint-disable-next-line
   const [tags, setTags] = useState(props.tags);
   const [openNote, setOpenNote] = useState(1);
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
+  const [loggedIn, setLoggedIn] = useState(false);
+  const [user, setUser] = useState({});
 
   // OPTIONS: all, notebook, tag, trash
   const [openFolder, setOpenFolder] = useState("all");
@@ -147,7 +152,7 @@ function App(props) {
   const addTag = (noteId, tagName) => {
     let tagFound = tags.find(tag => tag.name === tagName);
     if (!tagFound) {
-      tagFound = new Tag(tagName);
+      tagFound = new Tag(user, tagName);
       setTags(tags.concat(tagFound));
     }
     let copy = [...notes];
@@ -191,50 +196,95 @@ function App(props) {
     recursiveDeletion([...notes], notes.filter(note => note.deleted).length);
   };
 
+  const validateUser = (username, password) => {
+    return users.find(
+      user => user.email === username && user.password === password
+    );
+  };
+
   return (
     <ThemeProvider theme={dark ? darkTheme : lightTheme}>
+      <CssBaseline />
       <div className={classes.root}>
-        <CssBaseline />
-        <Sidebar
-          addNote={addNote}
-          addNotebook={addNotebook}
-          pageSetter={pageSetter}
-          folderSetter={folderSetter}
-          notebooks={notebooks}
-          tags={tags}
-          theme={{ dark: dark, setDarkTheme: setDarkTheme }}
-          search={{
-            term: searchTerm,
-            update: value => setSearchTerm(value)
-          }}
-        />
-        <main className={classes.content}>
-          <Bridge
-            page={page}
-            openFolder={openFolder}
-            notes={notes}
-            notebooks={{
-              all: notebooks,
-              rename: renameNotebook,
-              delete: deleteNotebook
+        {loggedIn ? (
+          <>
+            <Sidebar
+              user={{
+                get: user,
+                signOut: () => {
+                  setLoggedIn(false);
+                }
+              }}
+              addNote={addNote}
+              addNotebook={addNotebook}
+              pageSetter={pageSetter}
+              folderSetter={folderSetter}
+              notebooks={notebooks.filter(
+                notebook => notebook.author.id === user.id
+              )}
+              tags={tags.filter(tag => tag.author.id === user.id)}
+              theme={{ dark: dark, setDarkTheme: setDarkTheme }}
+              search={{
+                term: searchTerm,
+                update: value => setSearchTerm(value)
+              }}
+            />
+            <main className={classes.content}>
+              <Bridge
+                page={page}
+                openFolder={openFolder}
+                notes={notes.filter(note => note.author.id === user.id)}
+                notebooks={{
+                  all: notebooks.filter(
+                    notebook => notebook.author.id === user.id
+                  ),
+                  rename: renameNotebook,
+                  delete: deleteNotebook
+                }}
+                trash={{ empty: emptyTrash }}
+                tags={tags.filter(tag => tag.author.id === user.id)}
+                noteSetter={noteSetter}
+                searchTerm={{
+                  value: searchTerm,
+                  update: value => setSearchTerm(value)
+                }}
+              />
+            </main>
+            <NoteView
+              note={notes.find(
+                note => note.author.id === user.id && note.id === openNote
+              )}
+              editNote={editNote}
+              deleteNote={deleteNote}
+              restoreNote={restoreNote}
+              notebooks={notebooks}
+              tags={{ add: addTag, remove: removeTag }}
+            />
+          </>
+        ) : (
+          <Login
+            user={{
+              loggedIn: loggedIn,
+              logIn: user => {
+                setUser(user);
+                setPage(0);
+                setOpenFolder("all");
+                setLoggedIn(true);
+              },
+              create: (name, email, password) => {
+                let newAccount = new Account(name, email, password);
+                setUsers(users.concat(newAccount));
+                setSnackbarMessage("Successfully created account");
+                setOpenSnackbar(true);
+              },
+              validate: validateUser
             }}
-            trash={{ empty: emptyTrash }}
-            tags={tags}
-            noteSetter={noteSetter}
-            searchTerm={{
-              value: searchTerm,
-              update: value => setSearchTerm(value)
+            say={message => {
+              setSnackbarMessage(message);
+              setOpenSnackbar(true);
             }}
           />
-        </main>
-        <NoteView
-          note={notes.filter(note => note.id === openNote)[0]}
-          editNote={editNote}
-          deleteNote={deleteNote}
-          restoreNote={restoreNote}
-          notebooks={notebooks}
-          tags={{ add: addTag, remove: removeTag }}
-        />
+        )}
         <Snackbar
           anchorOrigin={{
             vertical: "bottom",
