@@ -56,7 +56,12 @@ const NewNoteDialog = ({ user, addNote, notebooks }) => {
   return (
     <div>
       <Container>
-        <CreateButton onClick={() => setOpen(true)} />
+        <CreateButton
+          onClick={() => {
+            setOpen(true);
+            setValues({ notebook: notebooks[0] });
+          }}
+        />
       </Container>
       <Dialog
         open={open}
