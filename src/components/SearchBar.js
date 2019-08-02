@@ -55,7 +55,7 @@ const SearchBar = ({ search, folderSetter }) => {
         value={search.term}
         onChange={event => search.update(event.target.value)}
         onClick={() => folderSetter("search")}
-        placeholder="Search notes..."
+        placeholder="Search all notes..."
         classes={{
           root: classes.inputRoot,
           input: classes.inputInput

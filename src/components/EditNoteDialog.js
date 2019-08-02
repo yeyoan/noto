@@ -6,7 +6,13 @@ import DialogActions from "@material-ui/core/DialogActions";
 import DialogContent from "@material-ui/core/DialogContent";
 import DialogTitle from "@material-ui/core/DialogTitle";
 import EditIcon from "@material-ui/icons/EditOutlined";
-import { MenuItem, Select, FormControl, InputLabel, ListItemIcon } from "@material-ui/core";
+import {
+  MenuItem,
+  Select,
+  FormControl,
+  InputLabel,
+  ListItemIcon
+} from "@material-ui/core";
 
 const EditNoteDialog = ({ note, editNote, notebooks, closeMenu }) => {
   const [open, setOpen] = useState(false);
@@ -57,7 +63,8 @@ const EditNoteDialog = ({ note, editNote, notebooks, closeMenu }) => {
         <ListItemIcon>
           <EditIcon />
         </ListItemIcon>
-        Edit</MenuItem>
+        Edit note
+      </MenuItem>
       <Dialog
         open={open}
         onClose={handleClose}

@@ -24,13 +24,20 @@ const User = ({ user, theme }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = React.useState(null);
 
+  const getInitials = name => {
+    let nameArray = name.split(" ");
+    return (
+      name.charAt(0) +
+      (nameArray.length > 1 ? nameArray[nameArray.length - 1].charAt(0) : "")
+    ).toUpperCase();
+  };
+
   return (
     <div>
       <ListItem>
         <ListItemAvatar>
           <Avatar className={classes.avatar}>
-            {user.get.name.charAt(0)}
-            {user.get.name.split(" ")[1].charAt(0)}
+            {getInitials(user.get.name)}
           </Avatar>
         </ListItemAvatar>
         <ListItemText primary={user.get.name} />
@@ -63,7 +70,7 @@ const User = ({ user, theme }) => {
           <ListItemIcon>
             <ExitToAppIcon />
           </ListItemIcon>
-          Logout
+          Sign out {user.get.email}
         </MenuItem>
       </Menu>
     </div>

@@ -21,7 +21,7 @@ const DeleteNoteDialog = ({ noteTitle, deleteNote, closeMenu }) => {
         <ListItemIcon>
           <DeleteIcon />
         </ListItemIcon>
-        Delete
+        Delete note
       </MenuItem>
       <Dialog
         open={open}
