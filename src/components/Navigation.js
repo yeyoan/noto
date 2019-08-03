@@ -22,16 +22,8 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const Navigation = ({
-  user,
-  addNotebook,
-  pageSetter,
-  folderSetter,
-  notebooks,
-  tags
-}) => {
+const Navigation = ({ user, addNotebook, folder, notebooks, tags }) => {
   const classes = useStyles();
-  const [selected, setSelected] = useState({ id: 0, folder: "all" });
   const [openNotebooks, setOpenNotebooks] = useState(false);
   const [openTags, setOpenTags] = useState(false);
 
@@ -42,7 +34,7 @@ const Navigation = ({
           button
           onClick={onClick(notebook.id, "notebook")}
           selected={
-            selected.id === notebook.id && selected.folder === "notebook"
+            folder.id.get() === notebook.id && folder.type.get() === "notebook"
           }
           key={index}
           className={classes.nested}
@@ -62,7 +54,7 @@ const Navigation = ({
         <ListItem
           button
           onClick={onClick(tag.id, "tag")}
-          selected={selected.id === tag.id && selected.folder === "tag"}
+          selected={folder.id.get() === tag.id && folder.type.get() === "tag"}
           key={index}
           className={classes.nested}
         >
@@ -78,11 +70,10 @@ const Navigation = ({
     };
   };
 
-  const onClick = (page, folder) => {
+  const onClick = (id, type) => {
     return () => {
-      pageSetter(page);
-      folderSetter(folder);
-      setSelected({ id: page, folder: folder });
+      folder.id.set(id);
+      folder.type.set(type);
     };
   };
 
@@ -91,7 +82,7 @@ const Navigation = ({
       <ListItem
         button
         onClick={onClick(0, "all")}
-        selected={selected.id === 0 && selected.folder === "all"}
+        selected={folder.id.get() === 0 && folder.type.get() === "all"}
       >
         <ListItemIcon>
           <NoteIcon />
@@ -133,7 +124,7 @@ const Navigation = ({
       <ListItem
         button
         onClick={onClick(-1, "trash")}
-        selected={selected.id === -1 && selected.folder === "trash"}
+        selected={folder.id.get() === -1 && folder.type.get() === "trash"}
       >
         <ListItemIcon>
           <DeleteIcon />

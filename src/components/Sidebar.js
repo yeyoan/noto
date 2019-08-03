@@ -20,8 +20,7 @@ const Sidebar = ({
   user,
   addNote,
   addNotebook,
-  pageSetter,
-  folderSetter,
+  folder,
   notebooks,
   tags,
   theme,
@@ -40,13 +39,12 @@ const Sidebar = ({
       style={{ backgroundColor: "red" }}
     >
       <User user={user} theme={theme} />
-      <SearchBar search={search} folderSetter={folderSetter} />
+      <SearchBar search={search} folderSetter={folder.type.set} />
       <NewNoteDialog user={user.get} addNote={addNote} notebooks={notebooks} />
       <Navigation
         user={user.get}
         addNotebook={addNotebook}
-        pageSetter={pageSetter}
-        folderSetter={folderSetter}
+        folder={folder}
         notebooks={notebooks}
         tags={tags}
       />

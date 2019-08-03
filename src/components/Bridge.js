@@ -2,13 +2,10 @@ import React from "react";
 import NoteListView from "./NoteListView";
 
 const Bridge = ({
-  page,
-  openFolder,
-  notes,
-  notebooks,
+  folder,
+  items,
   trash,
   tags,
-  noteSetter,
   searchTerm
 }) => {
   const search = note => {
@@ -19,7 +16,7 @@ const Bridge = ({
     );
   };
 
-  if (openFolder === "search") {
+  if (folder.type === "search") {
     document.title = "Search Results - Noto";
     return (
       <NoteListView
@@ -28,53 +25,78 @@ const Bridge = ({
             ? `Search results for '${searchTerm.value}'`
             : "Start typing..."
         }
-        notes={notes.filter(search)}
-        noteSetter={noteSetter}
+        notes={{
+          all: items.notes.all.filter(search),
+          open: {
+            get: items.notes.open.get,
+            set: items.notes.open.set
+          }
+        }}
+        noteSetter={items.notes.open.set}
       />
     );
   }
-  if (openFolder === "all") {
+  if (folder.type === "all") {
     document.title = "All Notes - Noto";
     return (
       <NoteListView
         name="All Notes"
-        notes={notes.filter(note => !note.deleted)}
-        noteSetter={noteSetter}
+        notes={{
+          all: items.notes.all.filter(note => !note.deleted),
+          open: {
+            get: items.notes.open.get,
+            set: items.notes.open.set
+          }
+        }}
       />
     );
   }
-  if (openFolder === "notebook") {
-    const notebookName = notebooks.all.find(notebook => notebook.id === page)
-      .name;
-    document.title = `${notebookName} - Noto`;
+  if (folder.type === "notebook") {
+    const name = items.notebooks.all.find(notebook => notebook.id === folder.id).name;
+    document.title = `${name} - Noto`;
     return (
       <NoteListView
-        name={notebookName}
-        notes={notes.filter(note => note.notebook.id === page && !note.deleted)}
-        noteSetter={noteSetter}
+        name={name}
+        notes={{
+          all: items.notes.all.filter(note => note.notebook.id === folder.id && !note.deleted),
+          open: {
+            get: items.notes.open.get,
+            set: items.notes.open.set
+          }
+        }}
         menu="notebook"
-        notebooks={{ ...notebooks, id: page }}
+        notebooks={{ ...items.notebooks, id: folder.id }}
       />
     );
   }
-  if (openFolder === "tag") {
-    const tag = tags.find(tag => tag.id === page);
+  if (folder.type === "tag") {
+    const tag = tags.find(tag => tag.id === folder.id);
     document.title = `${tag.name} - Noto`;
     return (
       <NoteListView
         name={`Tagged '${tag.name}'`}
-        notes={notes.filter(note => note.tags.includes(tag) && !note.deleted)}
-        noteSetter={noteSetter}
+        notes={{
+          all: items.notes.all.filter(note => note.tags.includes(tag) && !note.deleted),
+          open: {
+            get: items.notes.open.get,
+            set: items.notes.open.set
+          }
+        }}
       />
     );
   }
-  if (openFolder === "trash") {
+  if (folder.type === "trash") {
     document.title = "Trash - Noto";
     return (
       <NoteListView
         name="Trash"
-        notes={notes.filter(note => note.deleted)}
-        noteSetter={noteSetter}
+        notes={{
+          all: items.notes.all.filter(note => note.deleted),
+          open: {
+            get: items.notes.open.get,
+            set: items.notes.open.set
+          }
+        }}
         menu="trash"
         trash={trash}
       />

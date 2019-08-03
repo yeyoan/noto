@@ -37,7 +37,7 @@ const notes = [
   new Note(
     users[0],
     "Known Issues 🐛",
-    "- When deleting a note, it's still selected in the folder.\n- NOT responsive on mobile.\n- All Notes not selected when redirected there.\n- Cannot move arrow keys up or down in edit note dialog.\n- React complains about something in edit note dialog (most likely related to above).",
+    "- NOT responsive on mobile.\n- Cannot move arrow keys up or down in edit note dialog.\n- React complains about something in edit note dialog (most likely related to above).",
     new Date(2019, 7, 1),
     notebooks[0],
     [...tags]

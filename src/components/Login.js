@@ -143,7 +143,7 @@ const Login = ({ user, say }) => {
                     required
                     fullWidth
                     variant="outlined"
-                    id="password"
+                    id="confirm-password"
                     label="Confirm Password"
                     className={classes.textField}
                     value={values.confirmPassword}

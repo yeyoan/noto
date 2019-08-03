@@ -46,13 +46,12 @@ const lightTheme = createMuiTheme({
 function App(props) {
   const classes = useStyles();
   const [page, setPage] = useState(0);
-  // eslint-disable-next-line
   const [users, setUsers] = useState(props.users);
   const [notes, setNotes] = useState(props.notes);
   const [notebooks, setNotebooks] = useState(props.notebooks);
   const [tags, setTags] = useState(props.tags);
-  const [openNote, setOpenNote] = useState(1);
-  const [dark, setDark] = useState(false);
+  const [openNoteId, setOpenNoteId] = useState(1);
+  const [dark, setDark] = useState(true);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
@@ -70,26 +69,16 @@ function App(props) {
     if (reason === "clickaway") {
       return;
     }
-
     setOpenSnackbar(false);
   };
 
-  const pageSetter = pageNumber => {
-    setPage(pageNumber);
-  };
-
-  const folderSetter = folder => {
-    setOpenFolder(folder);
-  };
-
-  const noteSetter = noteId => {
-    setOpenNote(noteId);
+  const openNote = id => {
+    setOpenNoteId(id);
   };
 
   const addNote = note => {
     setNotes(notes.concat(note));
-    setSnackbarMessage(`Successfully created ${note.title}`);
-    setOpenSnackbar(true);
+    say(`Successfully created ${note.title}`);
   };
 
   const editNote = (id, title, content, notebook) => {
@@ -100,27 +89,7 @@ function App(props) {
     note.notebook = notebook;
     note.date = new Date();
     setNotes(copy);
-    setSnackbarMessage(`${note.title} updated`);
-    setOpenSnackbar(true);
-  };
-
-  const renameNotebook = (id, name) => {
-    let copy = [...notebooks];
-    let notebook = copy[copy.findIndex(notebook => notebook.id === id)];
-    notebook.name = name;
-    setNotebooks(copy);
-    setSnackbarMessage("Notebook renamed");
-    setOpenSnackbar(true);
-  };
-
-  const deleteNotebook = id => {
-    let copy = [...notebooks];
-    let notebook = copy.find(notebook => notebook.id === id);
-    copy.splice(copy.indexOf(notebook), 1);
-    setNotebooks(copy);
-    setOpenFolder("all");
-    setSnackbarMessage(`Deleted ${notebook.name}`);
-    setOpenSnackbar(true);
+    say(`${note.title} updated`);
   };
 
   const deleteNote = noteId => {
@@ -128,9 +97,8 @@ function App(props) {
     let note = copy[copy.findIndex(note => note.id === noteId)];
     note.deleted = true;
     setNotes(copy);
-    setOpenNote(-1);
-    setSnackbarMessage(`${note.title} moved to Trash`);
-    setOpenSnackbar(true);
+    setOpenNoteId(-1);
+    say(`${note.title} moved to Trash`);
   };
 
   const restoreNote = noteId => {
@@ -138,15 +106,31 @@ function App(props) {
     let note = copy[copy.findIndex(note => note.id === noteId)];
     note.deleted = false;
     setNotes(copy);
-    setOpenNote(-1);
-    setSnackbarMessage(`${note.title} restored to ${note.notebook.name}`);
-    setOpenSnackbar(true);
+    setOpenNoteId(-1);
+    say(`${note.title} restored to ${note.notebook.name}`);
   };
 
   const addNotebook = notebook => {
     setNotebooks(notebooks.concat(notebook));
-    setSnackbarMessage(`Successfully created ${notebook.name}`);
-    setOpenSnackbar(true);
+    say(`Successfully created ${notebook.name}`);
+  };
+
+  const renameNotebook = (id, name) => {
+    let copy = [...notebooks];
+    let notebook = copy[copy.findIndex(notebook => notebook.id === id)];
+    notebook.name = name;
+    setNotebooks(copy);
+    say("Notebook renamed");
+  };
+
+  const deleteNotebook = id => {
+    let copy = [...notebooks];
+    let notebook = copy.find(notebook => notebook.id === id);
+    copy.splice(copy.indexOf(notebook), 1);
+    setNotebooks(copy);
+    setPage(0);
+    setOpenFolder("all");
+    say(`Deleted ${notebook.name}`);
   };
 
   const addTag = (noteId, tagName) => {
@@ -177,6 +161,7 @@ function App(props) {
       copyTags.splice(copyTags.findIndex(tag => tag.name === tagName), 1);
       setTags(copyTags);
       if (openFolder === "tag" && page === tagId) {
+        setPage(0);
         setOpenFolder("all");
       }
     }
@@ -186,8 +171,7 @@ function App(props) {
     const recursiveDeletion = (all, trash) => {
       if (trash === 0) {
         setNotes(all);
-        setSnackbarMessage("Trash emptied");
-        setOpenSnackbar(true);
+        say("Trash emptied");
         return;
       }
       all.splice(all.findIndex(note => note.deleted), 1);
@@ -202,6 +186,11 @@ function App(props) {
     );
   };
 
+  const say = message => {
+    setSnackbarMessage(message);
+    setOpenSnackbar(true);
+  };
+
   return (
     <ThemeProvider theme={dark ? darkTheme : lightTheme}>
       <CssBaseline />
@@ -211,14 +200,20 @@ function App(props) {
             <Sidebar
               user={{
                 get: user,
-                signOut: () => {
-                  setLoggedIn(false);
-                }
+                signOut: () => setLoggedIn(false)
               }}
               addNote={addNote}
               addNotebook={addNotebook}
-              pageSetter={pageSetter}
-              folderSetter={folderSetter}
+              folder={{
+                id: {
+                  get: () => page,
+                  set: id => setPage(id)
+                },
+                type: {
+                  get: () => openFolder,
+                  set: type => setOpenFolder(type)
+                }
+              }}
               notebooks={notebooks.filter(
                 notebook => notebook.author.id === user.id
               )}
@@ -226,24 +221,33 @@ function App(props) {
               theme={{ dark: dark, setDarkTheme: setDarkTheme }}
               search={{
                 term: searchTerm,
-                update: value => setSearchTerm(value)
+                update: term => setSearchTerm(term)
               }}
             />
             <main className={classes.content}>
               <Bridge
-                page={page}
-                openFolder={openFolder}
-                notes={notes.filter(note => note.author.id === user.id)}
-                notebooks={{
-                  all: notebooks.filter(
-                    notebook => notebook.author.id === user.id
-                  ),
-                  rename: renameNotebook,
-                  delete: deleteNotebook
+                folder={{
+                  id: page,
+                  type: openFolder
+                }}
+                items={{
+                  notes: {
+                    all: notes.filter(note => note.author.id === user.id),
+                    open: {
+                      get: openNoteId,
+                      set: openNote
+                    }
+                  },
+                  notebooks: {
+                    all: notebooks.filter(
+                      notebook => notebook.author.id === user.id
+                    ),
+                    rename: renameNotebook,
+                    delete: deleteNotebook
+                  }
                 }}
                 trash={{ empty: emptyTrash }}
                 tags={tags.filter(tag => tag.author.id === user.id)}
-                noteSetter={noteSetter}
                 searchTerm={{
                   value: searchTerm,
                   update: value => setSearchTerm(value)
@@ -252,7 +256,7 @@ function App(props) {
             </main>
             <NoteView
               note={notes.find(
-                note => note.author.id === user.id && note.id === openNote
+                note => note.author.id === user.id && note.id === openNoteId
               )}
               editNote={editNote}
               deleteNote={deleteNote}
@@ -274,15 +278,11 @@ function App(props) {
               create: (name, email, password) => {
                 let newAccount = new Account(name, email, password);
                 setUsers(users.concat(newAccount));
-                setSnackbarMessage("Successfully created account");
-                setOpenSnackbar(true);
+                say("Successfully created account");
               },
               validate: validateUser
             }}
-            say={message => {
-              setSnackbarMessage(message);
-              setOpenSnackbar(true);
-            }}
+            say={say}
           />
         )}
         <Snackbar

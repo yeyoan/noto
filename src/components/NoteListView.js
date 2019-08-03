@@ -38,8 +38,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const NoteList = ({ notes, noteSetter }) => {
-  const [selectedNote, setSelectedNote] = useState(1);
+const NoteList = ({ notes }) => {
   const classes = useStyles();
 
   const truncate = content => {
@@ -53,15 +52,14 @@ const NoteList = ({ notes, noteSetter }) => {
   };
 
   const getItems = () =>
-    notes.map((note, index) => (
+    notes.all.map(note => (
       <ListItem
         button
-        selected={selectedNote === note.id}
+        selected={notes.open.get === note.id}
         onClick={() => {
-          noteSetter(note.id);
-          setSelectedNote(note.id);
+          notes.open.set(note.id);
         }}
-        key={index}
+        key={note.id}
         divider
       >
         <ListItemText
@@ -82,18 +80,18 @@ const NoteList = ({ notes, noteSetter }) => {
       </ListItem>
     ));
 
-  if (notes.length > 0) {
+  if (notes.all.length > 0) {
     return <List component="nav">{getItems()}</List>;
   }
   return <Container />;
 };
 
-const NoteListView = ({ name, notes, noteSetter, menu, notebooks, trash }) => {
+const NoteListView = ({ name, notes, menu, notebooks, trash }) => {
   const classes = useStyles();
   const [anchorEl, setAnchorEl] = useState(null);
 
   const getMenu = () => {
-    if (!menu || (menu !== "notebook" && notes.length === 0)) {
+    if (!menu || (menu !== "notebook" && notes.all.length === 0)) {
       return <div />;
     } else {
       return (
@@ -154,7 +152,7 @@ const NoteListView = ({ name, notes, noteSetter, menu, notebooks, trash }) => {
           <Grid item xs={11}>
             <Box color="text.secondary">
               <Typography variant="subtitle2">
-                {notes.length} {notes.length === 1 ? "note" : "notes"}
+                {notes.all.length} {notes.all.length === 1 ? "note" : "notes"}
               </Typography>
             </Box>
           </Grid>
@@ -163,7 +161,7 @@ const NoteListView = ({ name, notes, noteSetter, menu, notebooks, trash }) => {
           </Grid>
         </Grid>
       </Container>
-      <NoteList notes={notes} noteSetter={noteSetter} />
+      <NoteList notes={notes} />
     </Box>
   );
 };
