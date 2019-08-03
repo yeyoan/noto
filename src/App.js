@@ -287,11 +287,11 @@ function App(props) {
         )}
         <Snackbar
           anchorOrigin={{
-            vertical: "bottom",
-            horizontal: "left"
+            vertical: "top",
+            horizontal: "center"
           }}
           open={openSnackbar}
-          autoHideDuration={6000}
+          autoHideDuration={3000}
           onClose={handleClose}
           ContentProps={{
             "aria-describedby": "message-id"
