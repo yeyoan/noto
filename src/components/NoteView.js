@@ -9,7 +9,9 @@ import {
   Menu,
   Grid,
   MenuItem,
-  ListItemIcon
+  ListItemIcon,
+  AppBar,
+  Toolbar
 } from "@material-ui/core";
 import BookIcon from "@material-ui/icons/BookOutlined";
 import { makeStyles } from "@material-ui/core/styles";
@@ -20,6 +22,10 @@ import DeleteNoteDialog from "./DeleteNoteDialog";
 import ChipInput from "material-ui-chip-input";
 
 const useStyles = makeStyles(theme => ({
+  appBar: {
+    top: "auto",
+    bottom: 0
+  },
   view: {
     padding: theme.spacing(3)
   },
@@ -75,7 +81,10 @@ const NoteView = ({
       }}
       anchor="right"
     >
-      <Box className={classes.view}>
+      <Box
+        className={classes.view}
+        style={{ maxHeight: "100%", overflowY: "auto" }}
+      >
         <Grid container spacing={0} direction="row" alignItems="center">
           <Grid item xs={11}>
             <Box
@@ -144,17 +153,6 @@ const NoteView = ({
         </Menu>
         <Divider />
         <Container className={classes.view}>
-          {!note.deleted ? (
-            <ChipInput
-              value={note.tags.map(tag => tag.name)}
-              onAdd={chip => tags.add(note.id, chip)}
-              onDelete={chip => tags.remove(note.id, chip)}
-              placeholder="Add tag"
-              fullWidth
-            />
-          ) : (
-            <div />
-          )}
           <Typography variant="h4" className={classes.title} gutterBottom>
             {note.title}
           </Typography>
@@ -167,6 +165,21 @@ const NoteView = ({
           </Typography>
         </Container>
       </Box>
+      {!note.deleted ? (
+        <AppBar position="absolute" color="inherit" className={classes.appBar}>
+          <Toolbar>
+            <ChipInput
+              value={note.tags.map(tag => tag.name)}
+              onAdd={chip => tags.add(note.id, chip)}
+              onDelete={chip => tags.remove(note.id, chip)}
+              placeholder="Add tag"
+              fullWidth
+            />
+          </Toolbar>
+        </AppBar>
+      ) : (
+        <div />
+      )}
     </Drawer>
   );
 };
