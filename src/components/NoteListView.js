@@ -114,7 +114,7 @@ const NoteListView = ({ name, notes, menu, notebooks, trash }) => {
                   rename={notebooks.rename}
                   setAnchorEl={() => setAnchorEl(null)}
                 />
-                {notes.length === 0 ? (
+                {notes.all.length === 0 ? (
                   <MenuItem
                     onClick={() => {
                       setAnchorEl(null);

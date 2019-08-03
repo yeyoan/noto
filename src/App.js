@@ -45,25 +45,28 @@ const lightTheme = createMuiTheme({
 
 function App(props) {
   const classes = useStyles();
-  const [page, setPage] = useState(0);
+
+  const [searchTerm, setSearchTerm] = useState("");
+
+  // Data states
   const [users, setUsers] = useState(props.users);
   const [notes, setNotes] = useState(props.notes);
   const [notebooks, setNotebooks] = useState(props.notebooks);
   const [tags, setTags] = useState(props.tags);
-  const [openNoteId, setOpenNoteId] = useState(1);
+
+  // UI states
   const [dark, setDark] = useState(true);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
-  const [searchTerm, setSearchTerm] = useState("");
+
+  // Account states
   const [loggedIn, setLoggedIn] = useState(false);
   const [user, setUser] = useState({});
 
-  // OPTIONS: all, notebook, tag, trash
-  const [openFolder, setOpenFolder] = useState("all");
-
-  const setDarkTheme = value => {
-    setDark(value);
-  };
+  // Navigation states
+  const [folderType, setFolderType] = useState("all");
+  const [folderId, setFolderId] = useState(0);
+  const [openNoteId, setOpenNoteId] = useState(1);
 
   const handleClose = (event, reason) => {
     if (reason === "clickaway") {
@@ -72,9 +75,7 @@ function App(props) {
     setOpenSnackbar(false);
   };
 
-  const openNote = id => {
-    setOpenNoteId(id);
-  };
+  // Note handlers
 
   const addNote = note => {
     setNotes(notes.concat(note));
@@ -110,6 +111,8 @@ function App(props) {
     say(`${note.title} restored to ${note.notebook.name}`);
   };
 
+  // Notebook handlers
+
   const addNotebook = notebook => {
     setNotebooks(notebooks.concat(notebook));
     say(`Successfully created ${notebook.name}`);
@@ -128,10 +131,12 @@ function App(props) {
     let notebook = copy.find(notebook => notebook.id === id);
     copy.splice(copy.indexOf(notebook), 1);
     setNotebooks(copy);
-    setPage(0);
-    setOpenFolder("all");
+    setFolderId(0);
+    setFolderType("all");
     say(`Deleted ${notebook.name}`);
   };
+
+  // Tag handlers
 
   const addTag = (noteId, tagName) => {
     let tagFound = tags.find(tag => tag.name === tagName);
@@ -160,9 +165,9 @@ function App(props) {
       let tagId = tag.id;
       copyTags.splice(copyTags.findIndex(tag => tag.name === tagName), 1);
       setTags(copyTags);
-      if (openFolder === "tag" && page === tagId) {
-        setPage(0);
-        setOpenFolder("all");
+      if (folderType === "tag" && folderId === tagId) {
+        setFolderId(0);
+        setFolderType("all");
       }
     }
   };
@@ -178,12 +183,6 @@ function App(props) {
       recursiveDeletion(all, trash - 1);
     };
     recursiveDeletion([...notes], notes.filter(note => note.deleted).length);
-  };
-
-  const validateUser = (username, password) => {
-    return users.find(
-      user => user.email === username && user.password === password
-    );
   };
 
   const say = message => {
@@ -206,19 +205,19 @@ function App(props) {
               addNotebook={addNotebook}
               folder={{
                 id: {
-                  get: () => page,
-                  set: id => setPage(id)
+                  get: () => folderId,
+                  set: id => setFolderId(id)
                 },
                 type: {
-                  get: () => openFolder,
-                  set: type => setOpenFolder(type)
+                  get: () => folderType,
+                  set: type => setFolderType(type)
                 }
               }}
               notebooks={notebooks.filter(
                 notebook => notebook.author.id === user.id
               )}
               tags={tags.filter(tag => tag.author.id === user.id)}
-              theme={{ dark: dark, setDarkTheme: setDarkTheme }}
+              theme={{ dark: dark, setDarkTheme: value => setDark(value) }}
               search={{
                 term: searchTerm,
                 update: term => setSearchTerm(term)
@@ -227,15 +226,15 @@ function App(props) {
             <main className={classes.content}>
               <Bridge
                 folder={{
-                  id: page,
-                  type: openFolder
+                  id: folderId,
+                  type: folderType
                 }}
                 items={{
                   notes: {
                     all: notes.filter(note => note.author.id === user.id),
                     open: {
                       get: openNoteId,
-                      set: openNote
+                      set: id => setOpenNoteId(id)
                     }
                   },
                   notebooks: {
@@ -271,8 +270,8 @@ function App(props) {
               loggedIn: loggedIn,
               logIn: user => {
                 setUser(user);
-                setPage(0);
-                setOpenFolder("all");
+                setFolderId(0);
+                setFolderType("all");
                 setLoggedIn(true);
               },
               create: (name, email, password) => {
@@ -280,7 +279,10 @@ function App(props) {
                 setUsers(users.concat(newAccount));
                 say("Successfully created account");
               },
-              validate: validateUser
+              validate: (email, password) =>
+                users.find(
+                  user => user.email === email && user.password === password
+                )
             }}
             say={say}
           />
