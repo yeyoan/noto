@@ -15,6 +15,7 @@ import CloseIcon from "@material-ui/icons/Close";
 import Tag from "./models/Tag";
 import Login from "./components/Login";
 import Account from "./models/Account";
+import ls from "local-storage";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -49,19 +50,21 @@ function App(props) {
   const [searchTerm, setSearchTerm] = useState("");
 
   // Data states
-  const [users, setUsers] = useState(props.users);
-  const [notes, setNotes] = useState(props.notes);
-  const [notebooks, setNotebooks] = useState(props.notebooks);
-  const [tags, setTags] = useState(props.tags);
+  const [users, setUsers] = useState(ls("users") || props.users);
+  const [notes, setNotes] = useState(ls("notes") || props.notes);
+  const [notebooks, setNotebooks] = useState(
+    ls("notebooks") || props.notebooks
+  );
+  const [tags, setTags] = useState(ls("tags") || props.tags);
 
   // UI states
-  const [dark, setDark] = useState(true);
+  const [dark, setDark] = useState(ls("theme") || false);
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   // Account states
-  const [loggedIn, setLoggedIn] = useState(false);
-  const [user, setUser] = useState({});
+  const [loggedIn, setLoggedIn] = useState(ls("loggedIn"), false);
+  const [user, setUser] = useState(ls("user"), {});
 
   // Navigation states
   const [folderType, setFolderType] = useState("all");
@@ -78,7 +81,9 @@ function App(props) {
   // Note handlers
 
   const addNote = note => {
-    setNotes(notes.concat(note));
+    let newNotes = notes.concat(note);
+    ls("notes", newNotes);
+    setNotes(newNotes);
     say(`Successfully created ${note.title}`);
   };
 
@@ -89,6 +94,7 @@ function App(props) {
     note.content = content;
     note.notebook = notebook;
     note.date = new Date();
+    ls("notes", copy);
     setNotes(copy);
     say(`${note.title} updated`);
   };
@@ -97,6 +103,7 @@ function App(props) {
     let copy = [...notes];
     let note = copy[copy.findIndex(note => note.id === noteId)];
     note.deleted = true;
+    ls("notes", copy);
     setNotes(copy);
     setOpenNoteId(-1);
     say(`${note.title} moved to Trash`);
@@ -106,6 +113,7 @@ function App(props) {
     let copy = [...notes];
     let note = copy[copy.findIndex(note => note.id === noteId)];
     note.deleted = false;
+    ls("notes", copy);
     setNotes(copy);
     setOpenNoteId(-1);
     say(`${note.title} restored to ${note.notebook.name}`);
@@ -114,7 +122,9 @@ function App(props) {
   // Notebook handlers
 
   const addNotebook = notebook => {
-    setNotebooks(notebooks.concat(notebook));
+    let newNotebooks = notebooks.concat(notebook);
+    ls("notebooks", newNotebooks);
+    setNotebooks(newNotebooks);
     say(`Successfully created ${notebook.name}`);
   };
 
@@ -122,6 +132,7 @@ function App(props) {
     let copy = [...notebooks];
     let notebook = copy[copy.findIndex(notebook => notebook.id === id)];
     notebook.name = name;
+    ls("notebooks", copy);
     setNotebooks(copy);
     say("Notebook renamed");
   };
@@ -130,6 +141,7 @@ function App(props) {
     let copy = [...notebooks];
     let notebook = copy.find(notebook => notebook.id === id);
     copy.splice(copy.indexOf(notebook), 1);
+    ls("notebooks", copy);
     setNotebooks(copy);
     setFolderId(0);
     setFolderType("all");
@@ -142,11 +154,14 @@ function App(props) {
     let tagFound = tags.find(tag => tag.name === tagName);
     if (!tagFound) {
       tagFound = new Tag(user, tagName);
-      setTags(tags.concat(tagFound));
+      let newTags = tags.concat(tagFound);
+      ls("tags", newTags);
+      setTags(newTags);
     }
     let copy = [...notes];
     let note = copy[copy.findIndex(note => note.id === noteId)];
     note.tags = note.tags.concat(tagFound);
+    ls("notes", copy);
     setNotes(copy);
   };
 
@@ -155,6 +170,7 @@ function App(props) {
     let note = copy[copy.findIndex(note => note.id === noteId)];
     let tag = note.tags.find(tag => tag.name === tagName);
     note.tags.splice(note.tags.indexOf(tag), 1);
+    ls("notes", copy);
     setNotes(copy);
     if (
       !notes.some(
@@ -164,6 +180,7 @@ function App(props) {
       let copyTags = [...tags];
       let tagId = tag.id;
       copyTags.splice(copyTags.findIndex(tag => tag.name === tagName), 1);
+      ls("tags", copyTags);
       setTags(copyTags);
       if (folderType === "tag" && folderId === tagId) {
         setFolderId(0);
@@ -175,6 +192,7 @@ function App(props) {
   const emptyTrash = () => {
     const recursiveDeletion = (all, trash) => {
       if (trash === 0) {
+        ls("notes", all);
         setNotes(all);
         say("Trash emptied");
         return;
@@ -199,7 +217,10 @@ function App(props) {
             <Sidebar
               user={{
                 get: user,
-                signOut: () => setLoggedIn(false)
+                signOut: () => {
+                  ls("loggedIn", false);
+                  setLoggedIn(false);
+                }
               }}
               addNote={addNote}
               addNotebook={addNotebook}
@@ -217,7 +238,13 @@ function App(props) {
                 notebook => notebook.author.id === user.id
               )}
               tags={tags.filter(tag => tag.author.id === user.id)}
-              theme={{ dark: dark, setDarkTheme: value => setDark(value) }}
+              theme={{
+                dark: dark,
+                setDarkTheme: value => {
+                  ls("theme", value);
+                  setDark(value);
+                }
+              }}
               search={{
                 term: searchTerm,
                 update: term => setSearchTerm(term)
@@ -269,14 +296,18 @@ function App(props) {
             user={{
               loggedIn: loggedIn,
               logIn: user => {
+                ls("user", user);
                 setUser(user);
                 setFolderId(0);
                 setFolderType("all");
+                ls("loggedIn", true);
                 setLoggedIn(true);
               },
               create: (name, email, password) => {
                 let newAccount = new Account(name, email, password);
-                setUsers(users.concat(newAccount));
+                let newUsers = users.concat(newAccount);
+                ls("users", newUsers);
+                setUsers(newUsers);
                 say("Successfully created account");
               },
               validate: (email, password) =>
